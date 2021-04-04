@@ -1,5 +1,10 @@
 # pm
-pm is a very thin Cloud Pub/Sub wrapper which lets you manage publish / subscribe messages. 
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
+![Test Workflow](https://github.com/k-yomo/pubsub_cli/workflows/Test/badge.svg)
+[![codecov](https://codecov.io/gh/k-yomo/pubsub_cli/branch/master/graph/badge.svg)](https://codecov.io/gh/k-yomo/pm)
+[![Go Report Card](https://goreportcard.com/badge/k-yomo/pm)](https://goreportcard.com/report/k-yomo/pm)
+
+pm is a very thin Cloud Pub/Sub client wrapper which lets you manage publish / subscribe messages. 
 
 ## Example
 ```go

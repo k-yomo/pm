@@ -22,8 +22,7 @@ func main() {
 
 	pubsubPublisher := pm.NewPublisher(
 		pubsubClient,
-		pm.WithPublishInterceptor(
-		),
+		pm.WithPublishInterceptor(),
 	)
 
 	pubsubSubscriber := pm.NewSubscriber(

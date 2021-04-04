@@ -13,7 +13,7 @@ type PublisherConfig struct {
 }
 
 type Publisher struct {
-	config       *PublisherConfig
+	config *PublisherConfig
 	*pubsub.Client
 }
 
