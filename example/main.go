@@ -1,7 +1,3 @@
-# pm
-
-## Example
-```go
 package main
 
 import (
@@ -47,4 +43,3 @@ func exampleSubscriptionHandler(ctx context.Context, m *pubsub.Message)  {
 		fmt.Println(string(m.Data))
 	}
 }
-```
