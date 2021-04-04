@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-type MessageHandler = func(ctx context.Context, message *pubsub.Message)
+type MessageHandler = func(ctx context.Context, m *pubsub.Message) error
 type SubscriptionInterceptor = func(next MessageHandler) MessageHandler
 
 type Config struct {
@@ -27,8 +27,8 @@ func NewPubSubManager(pubsubClient *pubsub.Client, opts ...Option) *PubSubManage
 		o.apply(&c)
 	}
 	return &PubSubManager{
-		config:       &c,
-		pubsubClient: pubsubClient,
+		config:               &c,
+		pubsubClient:         pubsubClient,
 		subscriptionHandlers: map[string]MessageHandler{},
 	}
 }
@@ -58,7 +58,10 @@ func (p *PubSubManager) Run() {
 			for i := len(p.config.subscriptionInterceptors) - 1; i >= 0; i-- {
 				last = p.config.subscriptionInterceptors[i](last)
 			}
-			if err := sub.Receive(ctx, last); err != nil {
+			err := sub.Receive(ctx, func(ctx context.Context, m *pubsub.Message) {
+				_ = last(ctx, m)
+			})
+			if err != nil {
 				log.Printf("%v\n", err)
 			}
 		}()

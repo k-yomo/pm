@@ -7,8 +7,10 @@ package main
 import (
 	"cloud.google.com/go/pubsub"
 	"context"
+	"errors"
 	"fmt"
 	"github.com/k-yomo/pm"
+	"github.com/k-yomo/pm/middleware/pm_autoack"
 	"github.com/k-yomo/pm/middleware/pm_recovery"
 	"os"
 	"os/signal"
@@ -24,7 +26,10 @@ func main() {
 
 	pubsubManager := pm.NewPubSubManager(
 		pubsubClient,
-		pm.WithSubscriptionInterceptor(pm_recovery.SubscriptionInterceptor),
+		pm.WithSubscriptionInterceptor(
+			pm_recovery.SubscriptionInterceptor,
+			pm_autoack.SubscriptionInterceptor,
+		),
 	)
 	defer pubsubManager.Close()
 
@@ -40,11 +45,17 @@ func main() {
 	<-c
 }
 
-func exampleSubscriptionHandler(ctx context.Context, m *pubsub.Message)  {
-	if string(m.Data) == "panic" {
+func exampleSubscriptionHandler(ctx context.Context, m *pubsub.Message) error {
+	dataStr := string(m.Data)
+	if dataStr == "panic" {
 		panic("panic")
-	} else {
-		fmt.Println(string(m.Data))
 	}
+
+	if dataStr == "error" {
+		return errors.New("error")
+	}
+	
+	fmt.Println(string(m.Data))
+	return nil
 }
 ```

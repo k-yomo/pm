@@ -13,13 +13,13 @@ import (
 )
 
 func SubscriptionInterceptor(next pm.MessageHandler) pm.MessageHandler {
-	return func(ctx context.Context, message *pubsub.Message) {
+	return func(ctx context.Context, m *pubsub.Message) error {
 		defer func() {
 			if rvr := recover(); rvr != nil {
 				PrintPrettyStack(rvr)
 			}
 		}()
-		next(ctx, message)
+		return next(ctx, m)
 	}
 }
 
