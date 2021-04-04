@@ -12,6 +12,7 @@ import (
 	"strings"
 )
 
+// SubscriptionInterceptor recover panic.
 func SubscriptionInterceptor(next pm.MessageHandler) pm.MessageHandler {
 	return func(ctx context.Context, m *pubsub.Message) error {
 		defer func() {

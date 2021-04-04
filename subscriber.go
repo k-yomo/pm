@@ -7,13 +7,18 @@ import (
 	"log"
 )
 
+// MessageHandler defines the message handler invoked by SubscriptionInterceptor to complete the normal
+// message handling.
 type MessageHandler = func(ctx context.Context, m *pubsub.Message) error
+// SubscriptionInterceptor provides a hook to intercept the execution of a message handling.
 type SubscriptionInterceptor = func(next MessageHandler) MessageHandler
 
+// SubscriberConfig represents a configuration of Subscriber.
 type SubscriberConfig struct {
 	subscriptionInterceptors []SubscriptionInterceptor
 }
 
+// Subscriber represents a wrapper of Pub/Sub client mainly focusing on pull subscription.
 type Subscriber struct {
 	config               *SubscriberConfig
 	pubsubClient         *pubsub.Client
@@ -21,6 +26,7 @@ type Subscriber struct {
 	cancel               context.CancelFunc
 }
 
+// NewSubscriber initializes new Subscriber.
 func NewSubscriber(pubsubClient *pubsub.Client, opts ...SubscriberOption) *Subscriber {
 	c := SubscriberConfig{}
 	for _, o := range opts {
@@ -33,6 +39,8 @@ func NewSubscriber(pubsubClient *pubsub.Client, opts ...SubscriberOption) *Subsc
 	}
 }
 
+// HandleSubscriptionFunc registers subscription handler for the given id's subscription.
+// If subscription does not exist, it will return error.
 func (p *Subscriber) HandleSubscriptionFunc(subscriptionID string, f MessageHandler) error {
 	ok, err := p.pubsubClient.Subscription(subscriptionID).Exists(context.Background())
 	if err != nil {
@@ -46,6 +54,7 @@ func (p *Subscriber) HandleSubscriptionFunc(subscriptionID string, f MessageHand
 	return nil
 }
 
+// Run starts running registered pull subscriptions.
 func (p *Subscriber) Run() {
 	ctx, cancel := context.WithCancel(context.Background())
 	p.cancel = cancel
@@ -68,6 +77,7 @@ func (p *Subscriber) Run() {
 	}
 }
 
+// Close closes running subscriptions gracefully.
 func (p *Subscriber) Close() {
 	if p.cancel != nil {
 		p.cancel()

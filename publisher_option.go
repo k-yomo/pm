@@ -1,5 +1,6 @@
 package pm
 
+// PublisherOption is a option to change publisher configuration.
 type PublisherOption interface {
 	apply(*PublisherConfig)
 }
@@ -18,6 +19,7 @@ func newPublisherOptionFunc(f func(c *PublisherConfig)) *publisherOptionFunc {
 	}
 }
 
+// WithPublishInterceptor sets publish interceptors.
 func WithPublishInterceptor(interceptors ...PublishInterceptor) PublisherOption {
 	return newPublisherOptionFunc(func(o *PublisherConfig) {
 		o.publishInterceptors = interceptors

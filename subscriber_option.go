@@ -1,5 +1,6 @@
 package pm
 
+// SubscriberOption is a option to change subscriber configuration.
 type SubscriberOption interface {
 	apply(*SubscriberConfig)
 }
@@ -18,6 +19,7 @@ func newSubscriberOptionFunc(f func(c *SubscriberConfig)) *subscriberOptionFunc 
 	}
 }
 
+// WithSubscriptionInterceptor sets subscription interceptors.
 func WithSubscriptionInterceptor(interceptors ...SubscriptionInterceptor) SubscriberOption {
 	return newSubscriberOptionFunc(func(o *SubscriberConfig) {
 		o.subscriptionInterceptors = interceptors

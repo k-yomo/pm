@@ -4,7 +4,12 @@
 [![codecov](https://codecov.io/gh/k-yomo/pm/branch/master/graph/badge.svg)](https://codecov.io/gh/k-yomo/pm)
 [![Go Report Card](https://goreportcard.com/badge/k-yomo/pm)](https://goreportcard.com/report/k-yomo/pm)
 
-pm is a very thin Cloud Pub/Sub client wrapper which lets you manage publish / subscribe messages. 
+pm is a thin Cloud Pub/Sub client wrapper which lets you manage publishing / subscribing with pluggable middleware. 
+
+## Installationo
+```sh
+go get -u github.com/k-yomo/pm
+```
 
 ## Example
 ```go
