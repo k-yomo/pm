@@ -10,6 +10,7 @@ import (
 // MessageHandler defines the message handler invoked by SubscriptionInterceptor to complete the normal
 // message handling.
 type MessageHandler = func(ctx context.Context, m *pubsub.Message) error
+
 // SubscriptionInterceptor provides a hook to intercept the execution of a message handling.
 type SubscriptionInterceptor = func(next MessageHandler) MessageHandler
 

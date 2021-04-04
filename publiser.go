@@ -8,9 +8,9 @@ import (
 // MessagePublisher defines the message publisher invoked by PublishInterceptor to complete the normal
 // message publishment.
 type MessagePublisher = func(ctx context.Context, topic *pubsub.Topic, m *pubsub.Message) *pubsub.PublishResult
+
 // PublishInterceptor provides a hook to intercept the execution of a publishment.
 type PublishInterceptor = func(next MessagePublisher) MessagePublisher
-
 
 // PublisherConfig represents a configuration of Publisher.
 type PublisherConfig struct {
