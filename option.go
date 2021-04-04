@@ -1,25 +1,25 @@
 package pm
 
-type Option interface {
-	apply(*Config)
+type SubscriberOption interface {
+	apply(*SubscriberConfig)
 }
 
-type optionFunc struct {
-	f func(config *Config)
+type subscriberOptionFunc struct {
+	f func(config *SubscriberConfig)
 }
 
-func (fdo *optionFunc) apply(do *Config) {
+func (fdo *subscriberOptionFunc) apply(do *SubscriberConfig) {
 	fdo.f(do)
 }
 
-func newOptionFunc(f func(c *Config)) *optionFunc {
-	return &optionFunc{
+func newSubscriberOptionFunc(f func(c *SubscriberConfig)) *subscriberOptionFunc {
+	return &subscriberOptionFunc{
 		f: f,
 	}
 }
 
-func WithSubscriptionInterceptor(interceptors ...SubscriptionInterceptor) Option {
-	return newOptionFunc(func(o *Config) {
+func WithSubscriptionInterceptor(interceptors ...SubscriptionInterceptor) SubscriberOption {
+	return newSubscriberOptionFunc(func(o *SubscriberConfig) {
 		o.subscriptionInterceptors = interceptors
 	})
 }

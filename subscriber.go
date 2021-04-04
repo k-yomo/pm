@@ -10,30 +10,30 @@ import (
 type MessageHandler = func(ctx context.Context, m *pubsub.Message) error
 type SubscriptionInterceptor = func(next MessageHandler) MessageHandler
 
-type Config struct {
+type SubscriberConfig struct {
 	subscriptionInterceptors []SubscriptionInterceptor
 }
 
-type PubSubManager struct {
-	config               *Config
+type Subscriber struct {
+	config               *SubscriberConfig
 	pubsubClient         *pubsub.Client
 	subscriptionHandlers map[string]MessageHandler
 	cancel               context.CancelFunc
 }
 
-func NewPubSubManager(pubsubClient *pubsub.Client, opts ...Option) *PubSubManager {
-	c := Config{}
+func NewSubscriber(pubsubClient *pubsub.Client, opts ...SubscriberOption) *Subscriber {
+	c := SubscriberConfig{}
 	for _, o := range opts {
 		o.apply(&c)
 	}
-	return &PubSubManager{
+	return &Subscriber{
 		config:               &c,
 		pubsubClient:         pubsubClient,
 		subscriptionHandlers: map[string]MessageHandler{},
 	}
 }
 
-func (p *PubSubManager) HandleSubscriptionFunc(subscriptionID string, f MessageHandler) error {
+func (p *Subscriber) HandleSubscriptionFunc(subscriptionID string, f MessageHandler) error {
 	ok, err := p.pubsubClient.Subscription(subscriptionID).Exists(context.Background())
 	if err != nil {
 		return err
@@ -46,7 +46,7 @@ func (p *PubSubManager) HandleSubscriptionFunc(subscriptionID string, f MessageH
 	return nil
 }
 
-func (p *PubSubManager) Run() {
+func (p *Subscriber) Run() {
 	ctx, cancel := context.WithCancel(context.Background())
 	p.cancel = cancel
 
@@ -68,7 +68,7 @@ func (p *PubSubManager) Run() {
 	}
 }
 
-func (p *PubSubManager) Close() {
+func (p *Subscriber) Close() {
 	if p.cancel != nil {
 		p.cancel()
 	}

@@ -20,21 +20,21 @@ func main() {
 	}
 	defer pubsubClient.Close()
 
-	pubsubManager := pm.NewPubSubManager(
+	pubsubSubscriber := pm.NewSubscriber(
 		pubsubClient,
 		pm.WithSubscriptionInterceptor(
 			pm_recovery.SubscriptionInterceptor,
 			pm_autoack.SubscriptionInterceptor,
 		),
 	)
-	defer pubsubManager.Close()
+	defer pubsubSubscriber.Close()
 
-	err = pubsubManager.HandleSubscriptionFunc("pm-example-sub", exampleSubscriptionHandler)
+	err = pubsubSubscriber.HandleSubscriptionFunc("pm-example-sub", exampleSubscriptionHandler)
 	if err != nil {
 		panic(err)
 	}
 
-	pubsubManager.Run()
+	pubsubSubscriber.Run()
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
