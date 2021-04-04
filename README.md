@@ -6,7 +6,7 @@
 
 pm is a thin Cloud Pub/Sub client wrapper which lets you manage publishing / subscribing with pluggable middleware. 
 
-## Installationo
+## Installation
 ```sh
 go get -u github.com/k-yomo/pm
 ```
