@@ -20,6 +20,12 @@ func main() {
 	}
 	defer pubsubClient.Close()
 
+	pubsubPublisher := pm.NewPublisher(
+		pubsubClient,
+		pm.WithPublishInterceptor(
+		),
+	)
+
 	pubsubSubscriber := pm.NewSubscriber(
 		pubsubClient,
 		pm.WithSubscriptionInterceptor(
@@ -29,12 +35,20 @@ func main() {
 	)
 	defer pubsubSubscriber.Close()
 
-	err = pubsubSubscriber.HandleSubscriptionFunc("pm-example-sub", exampleSubscriptionHandler)
+	err = pubsubSubscriber.HandleSubscriptionFunc("example-topic-sub", exampleSubscriptionHandler)
 	if err != nil {
 		panic(err)
 	}
 
 	pubsubSubscriber.Run()
+
+	pubsubPublisher.Publish(
+		context.Background(),
+		pubsubPublisher.Topic("example-topic"),
+		&pubsub.Message{
+			Data: []byte("test"),
+		},
+	)
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
@@ -48,9 +62,10 @@ func exampleSubscriptionHandler(ctx context.Context, m *pubsub.Message) error {
 	}
 
 	if dataStr == "error" {
+		fmt.Println("nack will be called to retry")
 		return errors.New("error")
 	}
 
-	fmt.Println(string(m.Data))
+	fmt.Println(dataStr)
 	return nil
 }
