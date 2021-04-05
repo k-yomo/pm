@@ -12,20 +12,19 @@ type MessagePublisher = func(ctx context.Context, topic *pubsub.Topic, m *pubsub
 // PublishInterceptor provides a hook to intercept the execution of a publishment.
 type PublishInterceptor = func(next MessagePublisher) MessagePublisher
 
-// PublisherConfig represents a configuration of Publisher.
-type PublisherConfig struct {
+type publisherOptions struct {
 	publishInterceptors []PublishInterceptor
 }
 
 // Publisher represents a wrapper of Pub/Sub client focusing on publishment.
 type Publisher struct {
-	config *PublisherConfig
+	opts *publisherOptions
 	*pubsub.Client
 }
 
 // NewPublisher initializes new Publisher.
 func NewPublisher(pubsubClient *pubsub.Client, opts ...PublisherOption) *Publisher {
-	c := PublisherConfig{}
+	c := publisherOptions{}
 	for _, o := range opts {
 		o.apply(&c)
 	}
@@ -38,8 +37,8 @@ func NewPublisher(pubsubClient *pubsub.Client, opts ...PublisherOption) *Publish
 // Publish publishes Pub/Sub message with applying middlewares
 func (p *Publisher) Publish(ctx context.Context, topic *pubsub.Topic, m *pubsub.Message) *pubsub.PublishResult {
 	last := publish
-	for i := len(p.config.publishInterceptors) - 1; i >= 0; i-- {
-		last = p.config.publishInterceptors[i](last)
+	for i := len(p.opts.publishInterceptors) - 1; i >= 0; i-- {
+		last = p.opts.publishInterceptors[i](last)
 	}
 	return last(ctx, topic, m)
 }

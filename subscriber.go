@@ -14,14 +14,13 @@ type MessageHandler = func(ctx context.Context, m *pubsub.Message) error
 // SubscriptionInterceptor provides a hook to intercept the execution of a message handling.
 type SubscriptionInterceptor = func(next MessageHandler) MessageHandler
 
-// SubscriberConfig represents a configuration of Subscriber.
-type SubscriberConfig struct {
+type subscriberOptions struct {
 	subscriptionInterceptors []SubscriptionInterceptor
 }
 
 // Subscriber represents a wrapper of Pub/Sub client mainly focusing on pull subscription.
 type Subscriber struct {
-	config               *SubscriberConfig
+	opts                 *subscriberOptions
 	pubsubClient         *pubsub.Client
 	subscriptionHandlers map[string]MessageHandler
 	cancel               context.CancelFunc
@@ -29,12 +28,12 @@ type Subscriber struct {
 
 // NewSubscriber initializes new Subscriber.
 func NewSubscriber(pubsubClient *pubsub.Client, opts ...SubscriberOption) *Subscriber {
-	c := SubscriberConfig{}
+	c := subscriberOptions{}
 	for _, o := range opts {
 		o.apply(&c)
 	}
 	return &Subscriber{
-		config:               &c,
+		opts:                 &c,
 		pubsubClient:         pubsubClient,
 		subscriptionHandlers: map[string]MessageHandler{},
 	}
@@ -65,8 +64,8 @@ func (p *Subscriber) Run() {
 		f := f
 		go func() {
 			last := f
-			for i := len(p.config.subscriptionInterceptors) - 1; i >= 0; i-- {
-				last = p.config.subscriptionInterceptors[i](last)
+			for i := len(p.opts.subscriptionInterceptors) - 1; i >= 0; i-- {
+				last = p.opts.subscriptionInterceptors[i](last)
 			}
 			err := sub.Receive(ctx, func(ctx context.Context, m *pubsub.Message) {
 				_ = last(ctx, m)

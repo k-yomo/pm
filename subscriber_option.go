@@ -2,18 +2,18 @@ package pm
 
 // SubscriberOption is a option to change subscriber configuration.
 type SubscriberOption interface {
-	apply(*SubscriberConfig)
+	apply(*subscriberOptions)
 }
 
 type subscriberOptionFunc struct {
-	f func(config *SubscriberConfig)
+	f func(config *subscriberOptions)
 }
 
-func (s *subscriberOptionFunc) apply(sc *SubscriberConfig) {
+func (s *subscriberOptionFunc) apply(sc *subscriberOptions) {
 	s.f(sc)
 }
 
-func newSubscriberOptionFunc(f func(sc *SubscriberConfig)) *subscriberOptionFunc {
+func newSubscriberOptionFunc(f func(sc *subscriberOptions)) *subscriberOptionFunc {
 	return &subscriberOptionFunc{
 		f: f,
 	}
@@ -21,7 +21,7 @@ func newSubscriberOptionFunc(f func(sc *SubscriberConfig)) *subscriberOptionFunc
 
 // WithSubscriptionInterceptor sets subscription interceptors.
 func WithSubscriptionInterceptor(interceptors ...SubscriptionInterceptor) SubscriberOption {
-	return newSubscriberOptionFunc(func(sc *SubscriberConfig) {
+	return newSubscriberOptionFunc(func(sc *subscriberOptions) {
 		sc.subscriptionInterceptors = interceptors
 	})
 }

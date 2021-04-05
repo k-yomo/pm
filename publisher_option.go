@@ -2,18 +2,18 @@ package pm
 
 // PublisherOption is a option to change publisher configuration.
 type PublisherOption interface {
-	apply(*PublisherConfig)
+	apply(*publisherOptions)
 }
 
 type publisherOptionFunc struct {
-	f func(config *PublisherConfig)
+	f func(config *publisherOptions)
 }
 
-func (p *publisherOptionFunc) apply(pc *PublisherConfig) {
+func (p *publisherOptionFunc) apply(pc *publisherOptions) {
 	p.f(pc)
 }
 
-func newPublisherOptionFunc(f func(pc *PublisherConfig)) *publisherOptionFunc {
+func newPublisherOptionFunc(f func(pc *publisherOptions)) *publisherOptionFunc {
 	return &publisherOptionFunc{
 		f: f,
 	}
@@ -21,7 +21,7 @@ func newPublisherOptionFunc(f func(pc *PublisherConfig)) *publisherOptionFunc {
 
 // WithPublishInterceptor sets publish interceptors.
 func WithPublishInterceptor(interceptors ...PublishInterceptor) PublisherOption {
-	return newPublisherOptionFunc(func(sc *PublisherConfig) {
+	return newPublisherOptionFunc(func(sc *publisherOptions) {
 		sc.publishInterceptors = interceptors
 	})
 }
