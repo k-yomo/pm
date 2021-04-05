@@ -9,11 +9,11 @@ type publisherOptionFunc struct {
 	f func(config *PublisherConfig)
 }
 
-func (fdo *publisherOptionFunc) apply(do *PublisherConfig) {
-	fdo.f(do)
+func (p *publisherOptionFunc) apply(pc *PublisherConfig) {
+	p.f(pc)
 }
 
-func newPublisherOptionFunc(f func(c *PublisherConfig)) *publisherOptionFunc {
+func newPublisherOptionFunc(f func(pc *PublisherConfig)) *publisherOptionFunc {
 	return &publisherOptionFunc{
 		f: f,
 	}
@@ -21,7 +21,7 @@ func newPublisherOptionFunc(f func(c *PublisherConfig)) *publisherOptionFunc {
 
 // WithPublishInterceptor sets publish interceptors.
 func WithPublishInterceptor(interceptors ...PublishInterceptor) PublisherOption {
-	return newPublisherOptionFunc(func(o *PublisherConfig) {
-		o.publishInterceptors = interceptors
+	return newPublisherOptionFunc(func(sc *PublisherConfig) {
+		sc.publishInterceptors = interceptors
 	})
 }
