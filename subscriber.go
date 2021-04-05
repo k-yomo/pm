@@ -27,13 +27,13 @@ type Subscriber struct {
 }
 
 // NewSubscriber initializes new Subscriber.
-func NewSubscriber(pubsubClient *pubsub.Client, opts ...SubscriberOption) *Subscriber {
-	c := subscriberOptions{}
-	for _, o := range opts {
-		o.apply(&c)
+func NewSubscriber(pubsubClient *pubsub.Client, opt ...SubscriberOption) *Subscriber {
+	opts := subscriberOptions{}
+	for _, o := range opt {
+		o.apply(&opts)
 	}
 	return &Subscriber{
-		opts:                 &c,
+		opts:                 &opts,
 		pubsubClient:         pubsubClient,
 		subscriptionHandlers: map[string]MessageHandler{},
 	}

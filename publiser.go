@@ -23,13 +23,13 @@ type Publisher struct {
 }
 
 // NewPublisher initializes new Publisher.
-func NewPublisher(pubsubClient *pubsub.Client, opts ...PublisherOption) *Publisher {
-	c := publisherOptions{}
-	for _, o := range opts {
-		o.apply(&c)
+func NewPublisher(pubsubClient *pubsub.Client, opt ...PublisherOption) *Publisher {
+	opts := publisherOptions{}
+	for _, o := range opt {
+		o.apply(&opts)
 	}
 	return &Publisher{
-		&c,
+		&opts,
 		pubsubClient,
 	}
 }
