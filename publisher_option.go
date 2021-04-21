@@ -6,14 +6,14 @@ type PublisherOption interface {
 }
 
 type publisherOptionFunc struct {
-	f func(config *publisherOptions)
+	f func(*publisherOptions)
 }
 
-func (p *publisherOptionFunc) apply(pc *publisherOptions) {
-	p.f(pc)
+func (p *publisherOptionFunc) apply(po *publisherOptions) {
+	p.f(po)
 }
 
-func newPublisherOptionFunc(f func(pc *publisherOptions)) *publisherOptionFunc {
+func newPublisherOptionFunc(f func(*publisherOptions)) *publisherOptionFunc {
 	return &publisherOptionFunc{
 		f: f,
 	}
@@ -21,7 +21,7 @@ func newPublisherOptionFunc(f func(pc *publisherOptions)) *publisherOptionFunc {
 
 // WithPublishInterceptor sets publish interceptors.
 func WithPublishInterceptor(interceptors ...PublishInterceptor) PublisherOption {
-	return newPublisherOptionFunc(func(sc *publisherOptions) {
-		sc.publishInterceptors = interceptors
+	return newPublisherOptionFunc(func(po *publisherOptions) {
+		po.publishInterceptors = interceptors
 	})
 }

@@ -6,14 +6,14 @@ type SubscriberOption interface {
 }
 
 type subscriberOptionFunc struct {
-	f func(config *subscriberOptions)
+	f func(*subscriberOptions)
 }
 
-func (s *subscriberOptionFunc) apply(sc *subscriberOptions) {
-	s.f(sc)
+func (s *subscriberOptionFunc) apply(so *subscriberOptions) {
+	s.f(so)
 }
 
-func newSubscriberOptionFunc(f func(sc *subscriberOptions)) *subscriberOptionFunc {
+func newSubscriberOptionFunc(f func(*subscriberOptions)) *subscriberOptionFunc {
 	return &subscriberOptionFunc{
 		f: f,
 	}
@@ -21,7 +21,7 @@ func newSubscriberOptionFunc(f func(sc *subscriberOptions)) *subscriberOptionFun
 
 // WithSubscriptionInterceptor sets subscription interceptors.
 func WithSubscriptionInterceptor(interceptors ...SubscriptionInterceptor) SubscriberOption {
-	return newSubscriberOptionFunc(func(sc *subscriberOptions) {
-		sc.subscriptionInterceptors = interceptors
+	return newSubscriberOptionFunc(func(so *subscriberOptions) {
+		so.subscriptionInterceptors = interceptors
 	})
 }
