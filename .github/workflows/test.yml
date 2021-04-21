@@ -38,7 +38,7 @@ jobs:
         run: go mod download
 
       - name: Test
-        run: go test -v -race -coverprofile=coverage.out ./...
+        run: PUBSUB_EMULATOR_HOST=localhost:8085 go test -v -race -coverprofile=coverage.out ./...
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
