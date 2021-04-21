@@ -41,31 +41,32 @@ func NewSubscriber(pubsubClient *pubsub.Client, opt ...SubscriberOption) *Subscr
 
 // HandleSubscriptionFunc registers subscription handler for the given id's subscription.
 // If subscription does not exist, it will return error.
-func (p *Subscriber) HandleSubscriptionFunc(subscriptionID string, f MessageHandler) error {
-	ok, err := p.pubsubClient.Subscription(subscriptionID).Exists(context.Background())
+func (s *Subscriber) HandleSubscriptionFunc(subscriptionID string, f MessageHandler) error {
+	sub := s.pubsubClient.Subscription(subscriptionID)
+	ok, err := sub.Exists(context.Background())
 	if err != nil {
 		return err
 	}
 	if !ok {
 		return errors.Errorf("pubsub subscription '%s' does not exist", subscriptionID)
 	}
-	p.subscriptionHandlers[subscriptionID] = f
+	s.subscriptionHandlers[subscriptionID] = f
 
 	return nil
 }
 
 // Run starts running registered pull subscriptions.
-func (p *Subscriber) Run() {
+func (s *Subscriber) Run() {
 	ctx, cancel := context.WithCancel(context.Background())
-	p.cancel = cancel
+	s.cancel = cancel
 
-	for subscriptionID, f := range p.subscriptionHandlers {
-		sub := p.pubsubClient.Subscription(subscriptionID)
+	for subscriptionID, f := range s.subscriptionHandlers {
+		sub := s.pubsubClient.Subscription(subscriptionID)
 		f := f
 		go func() {
 			last := f
-			for i := len(p.opts.subscriptionInterceptors) - 1; i >= 0; i-- {
-				last = p.opts.subscriptionInterceptors[i](last)
+			for i := len(s.opts.subscriptionInterceptors) - 1; i >= 0; i-- {
+				last = s.opts.subscriptionInterceptors[i](last)
 			}
 			err := sub.Receive(ctx, func(ctx context.Context, m *pubsub.Message) {
 				_ = last(ctx, m)
@@ -78,8 +79,8 @@ func (p *Subscriber) Run() {
 }
 
 // Close closes running subscriptions gracefully.
-func (p *Subscriber) Close() {
-	if p.cancel != nil {
-		p.cancel()
+func (s *Subscriber) Close() {
+	if s.cancel != nil {
+		s.cancel()
 	}
 }

@@ -18,6 +18,8 @@ func (s publisherOptionForTest) apply(so *publisherOptions) {
 }
 
 func TestNewPublisher(t *testing.T) {
+	t.Parallel()
+
 	type args struct {
 		pubsubClient *pubsub.Client
 		opt          []PublisherOption
@@ -49,6 +51,8 @@ func TestNewPublisher(t *testing.T) {
 }
 
 func TestPublisher_Publish(t *testing.T) {
+	t.Parallel()
+
 	pubsubClient, err := pubsub.NewClient(context.Background(), "test")
 	if err != nil {
 		t.Fatal(err)
@@ -59,7 +63,11 @@ func TestPublisher_Publish(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sub, err := pubsubClient.CreateSubscription(context.Background(), fmt.Sprintf("TestPublisher_Publish_%d", time.Now().Unix()), pubsub.SubscriptionConfig{Topic: topic})
+	sub, err := pubsubClient.CreateSubscription(
+		context.Background(),
+		fmt.Sprintf("TestPublisher_Publish_%d", time.Now().Unix()),
+		pubsub.SubscriptionConfig{Topic: topic},
+	)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -113,13 +121,13 @@ func TestPublisher_Publish(t *testing.T) {
 			if !tt.wantErr {
 				wg := sync.WaitGroup{}
 				wg.Add(1)
-				ctx, cancel := context.WithTimeout(tt.args.ctx, time.Second*3)
+				ctx, cancel := context.WithTimeout(tt.args.ctx, 3*time.Second)
 				go func() {
 					defer wg.Done()
-					err := sub.Receive(ctx, func(ctx context.Context, msg *pubsub.Message) {
-						msg.Ack()
-						if string(msg.Data) != tt.wantData {
-							t.Errorf("publish() gotData = %v, want %v", string(msg.Data), tt.wantData)
+					err := sub.Receive(ctx, func(ctx context.Context, m *pubsub.Message) {
+						m.Ack()
+						if string(m.Data) != tt.wantData {
+							t.Errorf("publish() gotData = %v, want %v", string(m.Data), tt.wantData)
 						}
 					})
 					if err != nil {
