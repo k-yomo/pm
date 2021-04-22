@@ -28,8 +28,8 @@ func main() {
 	pubsubSubscriber := pm.NewSubscriber(
 		pubsubClient,
 		pm.WithSubscriptionInterceptor(
-			pm_recovery.SubscriptionInterceptor,
-			pm_autoack.SubscriptionInterceptor,
+			pm_recovery.SubscriptionInterceptor(pm_recovery.WithDebugMode()),
+			pm_autoack.SubscriptionInterceptor(),
 		),
 	)
 	defer pubsubSubscriber.Close()

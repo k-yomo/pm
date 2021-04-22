@@ -7,14 +7,16 @@ import (
 )
 
 // SubscriptionInterceptor automatically ack / nack subscription based on the returned error.
-func SubscriptionInterceptor(next pm.MessageHandler) pm.MessageHandler {
-	return func(ctx context.Context, m *pubsub.Message) error {
-		err := next(ctx, m)
-		if err != nil {
-			m.Nack()
-		} else {
-			m.Ack()
+func SubscriptionInterceptor() pm.SubscriptionInterceptor {
+	return func(next pm.MessageHandler) pm.MessageHandler {
+		return func(ctx context.Context, m *pubsub.Message) error {
+			err := next(ctx, m)
+			if err != nil {
+				m.Nack()
+			} else {
+				m.Ack()
+			}
+			return err
 		}
-		return err
 	}
 }
