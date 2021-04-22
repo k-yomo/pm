@@ -13,7 +13,7 @@ type RecoveryHandlerFunc func(ctx context.Context, p interface{})
 // SubscriptionInterceptor recover panic.
 func SubscriptionInterceptor(opt ...Option) pm.SubscriptionInterceptor {
 	opts := options{
-		recoveryHandlerFunc: defaultRecoveryHandlerContext,
+		recoveryHandlerFunc: defaultRecoveryHandler,
 	}
 	for _, o := range opt {
 		o(&opts)

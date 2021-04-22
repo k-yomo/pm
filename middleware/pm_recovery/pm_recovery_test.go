@@ -23,7 +23,7 @@ func TestSubscriptionInterceptor(t *testing.T) {
 		t.Parallel()
 
 		var called bool
-		opts := []Option{WithRecoveryHandlerContext(func(ctx context.Context, p interface{}) {
+		opts := []Option{WithRecoveryHandler(func(ctx context.Context, p interface{}) {
 			called = true
 		})}
 		interceptor := SubscriptionInterceptor(opts...)
@@ -36,7 +36,7 @@ func TestSubscriptionInterceptor(t *testing.T) {
 	t.Run("recovers with debug recovery handler", func(t *testing.T) {
 		t.Parallel()
 
-		opts := []Option{WithDebugMode()}
+		opts := []Option{WithDebugRecoveryHandler()}
 		interceptor := SubscriptionInterceptor(opts...)
 		_ = interceptor(next)(context.Background(), &pubsub.Message{})
 	})
