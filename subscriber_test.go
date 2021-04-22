@@ -171,7 +171,7 @@ func TestSubscriber_Run(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	subscriber.Run()
+	subscriber.Run(context.Background())
 
 	var publishCount int64 = 2
 	for i := 0; i < int(publishCount); i++ {
@@ -223,7 +223,7 @@ func TestSubscriber_Close(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	subscriber.Run()
+	subscriber.Run(context.Background())
 	subscriber.Close()
 
 	ctx := context.Background()

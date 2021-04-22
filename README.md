@@ -54,7 +54,7 @@ func main() {
 		panic(err)
 	}
 
-	pubsubSubscriber.Run()
+	pubsubSubscriber.Run(context.Background())
 
 	pubsubPublisher.Publish(
 		context.Background(),

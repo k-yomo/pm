@@ -56,8 +56,8 @@ func (s *Subscriber) HandleSubscriptionFunc(subscriptionID string, f MessageHand
 }
 
 // Run starts running registered pull subscriptions.
-func (s *Subscriber) Run() {
-	ctx, cancel := context.WithCancel(context.Background())
+func (s *Subscriber) Run(ctx context.Context) {
+	ctx, cancel := context.WithCancel(ctx)
 	s.cancel = cancel
 
 	for subscriptionID, f := range s.subscriptionHandlers {
