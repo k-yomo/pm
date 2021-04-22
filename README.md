@@ -35,13 +35,16 @@ func main() {
 	}
 	defer pubsubClient.Close()
 
-	pubsubPublisher := pm.NewPublisher(pubsubClient)
+	pubsubPublisher := pm.NewPublisher(
+		pubsubClient,
+		pm.WithPublishInterceptor(),
+	)
 
 	pubsubSubscriber := pm.NewSubscriber(
 		pubsubClient,
 		pm.WithSubscriptionInterceptor(
-			pm_recovery.SubscriptionInterceptor,
-			pm_autoack.SubscriptionInterceptor,
+			pm_recovery.SubscriptionInterceptor(pm_recovery.WithDebugRecoveryHandler()),
+			pm_autoack.SubscriptionInterceptor(),
 		),
 	)
 	defer pubsubSubscriber.Close()

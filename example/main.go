@@ -28,7 +28,7 @@ func main() {
 	pubsubSubscriber := pm.NewSubscriber(
 		pubsubClient,
 		pm.WithSubscriptionInterceptor(
-			pm_recovery.SubscriptionInterceptor(pm_recovery.WithDebugMode()),
+			pm_recovery.SubscriptionInterceptor(pm_recovery.WithDebugRecoveryHandler()),
 			pm_autoack.SubscriptionInterceptor(),
 		),
 	)
