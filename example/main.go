@@ -14,7 +14,8 @@ import (
 )
 
 func main() {
-	pubsubClient, err := pubsub.NewClient(context.Background(), "pm-example")
+	ctx := context.Background()
+	pubsubClient, err := pubsub.NewClient(ctx, "pm-example")
 	if err != nil {
 		panic(err)
 	}
@@ -39,10 +40,10 @@ func main() {
 		panic(err)
 	}
 
-	pubsubSubscriber.Run(context.Background())
+	pubsubSubscriber.Run(ctx)
 
 	pubsubPublisher.Publish(
-		context.Background(),
+		ctx,
 		pubsubPublisher.Topic("example-topic"),
 		&pubsub.Message{
 			Data: []byte("test"),
