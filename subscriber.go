@@ -4,6 +4,7 @@ import (
 	"cloud.google.com/go/pubsub"
 	"context"
 	"fmt"
+	"golang.org/x/sync/errgroup"
 	"log"
 )
 
@@ -56,6 +57,20 @@ func (s *Subscriber) HandleSubscriptionFunc(subscriptionID string, f MessageHand
 	}
 
 	return nil
+}
+
+// HandleSubscriptionFuncMap registers multiple subscription handlers at once.
+// This function take map of key[subscription id]: value[corresponding message handler] pairs.
+func (s *Subscriber) HandleSubscriptionFuncMap(funcMap map[string]MessageHandler) error {
+	eg := errgroup.Group{}
+	for subscriptionID, f := range funcMap {
+		subscriptionID := subscriptionID
+		f := f
+		eg.Go(func() error {
+			return s.HandleSubscriptionFunc(subscriptionID, f)
+		})
+	}
+	return eg.Wait()
 }
 
 // Run starts running registered pull subscriptions.

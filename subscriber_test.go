@@ -20,6 +20,8 @@ func (s subscriberOptionForTest) apply(so *subscriberOptions) {
 }
 
 func TestNewSubscriber(t *testing.T) {
+	t.Parallel()
+
 	type args struct {
 		pubsubClient *pubsub.Client
 		opt          []SubscriberOption
@@ -44,7 +46,9 @@ func TestNewSubscriber(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if got := NewSubscriber(tt.args.pubsubClient, tt.args.opt...); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewSubscriber() = %v, want %v", got, tt.want)
 			}
@@ -60,14 +64,14 @@ func TestSubscriber_HandleSubscriptionFunc(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	topic, err := pubsubClient.CreateTopic(context.Background(), fmt.Sprintf("TestNewSubscriber_%d", time.Now().Unix()))
+	topic, err := pubsubClient.CreateTopic(context.Background(), fmt.Sprintf("TestSubscriber_HandleSubscriptionFunc_%d", time.Now().Unix()))
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	sub, err := pubsubClient.CreateSubscription(
 		context.Background(),
-		fmt.Sprintf("TestNewSubscriber_%d", time.Now().Unix()),
+		fmt.Sprintf("TestSubscriber_HandleSubscriptionFunc_%d", time.Now().Unix()),
 		pubsub.SubscriptionConfig{Topic: topic},
 	)
 	if err != nil {
@@ -116,14 +120,85 @@ func TestSubscriber_HandleSubscriptionFunc(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			if err := tt.subscriber.HandleSubscriptionFunc(tt.args.subscriptionID, tt.args.f); (err != nil) != tt.wantErr {
 				t.Errorf("HandleSubscriptionFunc() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
-			if _, ok := tt.subscriber.subscriptionHandlers[tt.args.subscriptionID]; ok == tt.wantErr {
-				t.Errorf("HandleSubscriptionFunc() set: %v, want set: %v", ok, !tt.wantErr)
+			if !tt.wantErr {
+				if _, ok := tt.subscriber.subscriptionHandlers[tt.args.subscriptionID]; !ok {
+					t.Errorf("HandleSubscriptionFunc() is expected to set subscription handler")
+				}
+			}
+		})
+	}
+}
+
+func TestSubscriber_HandleSubscriptionFuncMap(t *testing.T) {
+	t.Parallel()
+
+	pubsubClient, err := pubsub.NewClient(context.Background(), "test")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	topic, err := pubsubClient.CreateTopic(context.Background(), fmt.Sprintf("TestSubscriber_HandleSubscriptionFuncMap_%d", time.Now().Unix()))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	sub, err := pubsubClient.CreateSubscription(
+		context.Background(),
+		fmt.Sprintf("TestSubscriber_HandleSubscriptionFuncMap_%d", time.Now().Unix()),
+		pubsub.SubscriptionConfig{Topic: topic},
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	type args struct {
+		funcMap map[string]MessageHandler
+	}
+	tests := []struct {
+		name       string
+		subscriber *Subscriber
+		args       args
+		wantErr    bool
+	}{
+		{
+			name:       "sets subscription handler",
+			subscriber: NewSubscriber(pubsubClient),
+			args: args{
+				funcMap: map[string]MessageHandler{
+					sub.ID(): func(ctx context.Context, m *pubsub.Message) error { return nil },
+				},
+			},
+		},
+		{
+			name:       "when the subscription does not exist, it returns error",
+			subscriber: NewSubscriber(pubsubClient),
+			args: args{
+				funcMap: map[string]MessageHandler{
+					"invalid": func(ctx context.Context, m *pubsub.Message) error { return nil },
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			if err := tt.subscriber.HandleSubscriptionFuncMap(tt.args.funcMap); (err != nil) != tt.wantErr {
+				t.Errorf("HandleSubscriptionFuncMap() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			for subId, _ := range tt.args.funcMap {
+				if _, ok := tt.subscriber.subscriptionHandlers[subId]; ok == tt.wantErr {
+					t.Errorf("HandleSubscriptionFuncMap() set: %v, want set: %v", ok, !tt.wantErr)
+				}
 			}
 		})
 	}
