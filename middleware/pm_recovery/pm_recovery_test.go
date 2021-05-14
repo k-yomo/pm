@@ -3,6 +3,7 @@ package pm_recovery
 import (
 	"cloud.google.com/go/pubsub"
 	"context"
+	"github.com/k-yomo/pm"
 	"testing"
 )
 
@@ -16,7 +17,7 @@ func TestSubscriptionInterceptor(t *testing.T) {
 	t.Run("recovers with default recovery handler", func(t *testing.T) {
 		t.Parallel()
 		interceptor := SubscriptionInterceptor()
-		_ = interceptor(next)(context.Background(), &pubsub.Message{})
+		_ = interceptor(&pm.SubscriptionInfo{}, next)(context.Background(), &pubsub.Message{})
 	})
 
 	t.Run("recovers with default recovery handler", func(t *testing.T) {
@@ -27,7 +28,7 @@ func TestSubscriptionInterceptor(t *testing.T) {
 			called = true
 		})}
 		interceptor := SubscriptionInterceptor(opts...)
-		_ = interceptor(next)(context.Background(), &pubsub.Message{})
+		_ = interceptor(&pm.SubscriptionInfo{}, next)(context.Background(), &pubsub.Message{})
 		if !called {
 			t.Error("The custom recovery handler is not called")
 		}
@@ -38,6 +39,6 @@ func TestSubscriptionInterceptor(t *testing.T) {
 
 		opts := []Option{WithDebugRecoveryHandler()}
 		interceptor := SubscriptionInterceptor(opts...)
-		_ = interceptor(next)(context.Background(), &pubsub.Message{})
+		_ = interceptor(&pm.SubscriptionInfo{}, next)(context.Background(), &pubsub.Message{})
 	})
 }

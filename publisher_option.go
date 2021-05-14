@@ -1,5 +1,9 @@
 package pm
 
+type publisherOptions struct {
+	publishInterceptors []PublishInterceptor
+}
+
 // PublisherOption is a option to change publisher configuration.
 type PublisherOption interface {
 	apply(*publisherOptions)

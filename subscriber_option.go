@@ -1,5 +1,9 @@
 package pm
 
+type subscriberOptions struct {
+	subscriptionInterceptors []SubscriptionInterceptor
+}
+
 // SubscriberOption is a option to change subscriber configuration.
 type SubscriberOption interface {
 	apply(*subscriberOptions)

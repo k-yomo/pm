@@ -18,7 +18,7 @@ func SubscriptionInterceptor(opt ...Option) pm.SubscriptionInterceptor {
 	for _, o := range opt {
 		o(&opts)
 	}
-	return func(next pm.MessageHandler) pm.MessageHandler {
+	return func(_ *pm.SubscriptionInfo, next pm.MessageHandler) pm.MessageHandler {
 		return func(ctx context.Context, m *pubsub.Message) (err error) {
 			defer func() {
 				if r := recover(); r != nil {

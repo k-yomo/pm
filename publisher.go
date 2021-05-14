@@ -12,10 +12,6 @@ type MessagePublisher = func(ctx context.Context, topic *pubsub.Topic, m *pubsub
 // PublishInterceptor provides a hook to intercept the execution of a publishment.
 type PublishInterceptor = func(next MessagePublisher) MessagePublisher
 
-type publisherOptions struct {
-	publishInterceptors []PublishInterceptor
-}
-
 // Publisher represents a wrapper of Pub/Sub client focusing on publishment.
 type Publisher struct {
 	opts *publisherOptions

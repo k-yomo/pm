@@ -38,7 +38,7 @@ func TestNewSubscriber(t *testing.T) {
 			want: &Subscriber{
 				opts:                 &subscriberOptions{subscriptionInterceptors: []SubscriptionInterceptor{nil}},
 				pubsubClient:         &pubsub.Client{},
-				subscriptionHandlers: map[string]MessageHandler{},
+				subscriptionHandlers: map[string]*subscriptionHandler{},
 				cancel:               nil,
 			},
 		},
@@ -89,13 +89,24 @@ func TestSubscriber_HandleSubscriptionFunc(t *testing.T) {
 			subscriber: NewSubscriber(pubsubClient),
 			args: args{
 				subscriptionID: sub.ID(),
-				f: func(ctx context.Context, m *pubsub.Message) error {
-					return nil
-				},
+				f:              func(ctx context.Context, m *pubsub.Message) error { return nil },
 			},
 		},
 		{
-			name:       "if the subscription does not exist, it returns error",
+			name: "when a handler is already registered for the give subscription id, it returns error",
+			subscriber: func() *Subscriber {
+				s := NewSubscriber(pubsubClient)
+				_ = s.HandleSubscriptionFunc(sub.ID(), func(ctx context.Context, m *pubsub.Message) error { return nil })
+				return s
+			}(),
+			args: args{
+				subscriptionID: sub.ID(),
+				f:              func(ctx context.Context, m *pubsub.Message) error { return nil },
+			},
+			wantErr: true,
+		},
+		{
+			name:       "when the subscription does not exist, it returns error",
 			subscriber: NewSubscriber(pubsubClient),
 			args: args{
 				subscriptionID: "invalid",
@@ -142,12 +153,12 @@ func TestSubscriber_Run(t *testing.T) {
 
 	subscriber := NewSubscriber(
 		pubsubClient,
-		WithSubscriptionInterceptor(func(next MessageHandler) MessageHandler {
+		WithSubscriptionInterceptor(func(_ *SubscriptionInfo, next MessageHandler) MessageHandler {
 			return func(ctx context.Context, m *pubsub.Message) error {
 				m.Attributes = map[string]string{"intercepted": "abc"}
 				return next(ctx, m)
 			}
-		}, func(next MessageHandler) MessageHandler {
+		}, func(_ *SubscriptionInfo, next MessageHandler) MessageHandler {
 			return func(ctx context.Context, m *pubsub.Message) error {
 				// this will overwrite the first interceptor
 				m.Attributes = map[string]string{"intercepted": "true"}
