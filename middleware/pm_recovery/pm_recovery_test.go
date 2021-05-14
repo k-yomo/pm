@@ -20,7 +20,7 @@ func TestSubscriptionInterceptor(t *testing.T) {
 		_ = interceptor(&pm.SubscriptionInfo{}, next)(context.Background(), &pubsub.Message{})
 	})
 
-	t.Run("recovers with default recovery handler", func(t *testing.T) {
+	t.Run("recovers with custom recovery handler", func(t *testing.T) {
 		t.Parallel()
 
 		var called bool

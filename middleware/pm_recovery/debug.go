@@ -2,8 +2,8 @@ package pm_recovery
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
-	"github.com/pkg/errors"
 	"os"
 	"runtime/debug"
 	"strings"
