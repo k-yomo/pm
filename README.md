@@ -101,9 +101,9 @@ pm comes equipped with an optional middleware package named `pm_*`.
 
 #### Publisher middleware
 
-| middleware                                                                                              | description                                                              |
-|---------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
-| [Attributes](https://pkg.go.dev/github.com/k-yomo/pm/middleware/pm_attributes#PublishInterceptor)       | Set custom attributes to all outgoing messages when publish              |
+| middleware                                                                                                 | description                                                              |
+|------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| [Attributes](https://pkg.go.dev/github.com/k-yomo/pm/middleware/pm_attributes#PublishInterceptor)          | Set custom attributes to all outgoing messages when publish              |
 
 #### Subscription middleware
 
