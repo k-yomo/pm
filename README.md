@@ -118,27 +118,27 @@ pm middleware is just wrapping publishing / subscribing process which means you 
 - publisher middleware
 ```go
 func MyPublishInterceptor(attrs map[string]string) pm.PublishInterceptor {
-    return func (next pm.MessagePublisher) pm.MessagePublisher {
-        return func (ctx context.Context, topic *pubsub.Topic, m *pubsub.Message) *pubsub.PublishResult {
-        	// do something before publishing
-            result := next(ctx, topic, m)
-            // do something after publishing
-            return result
-        }
-    }
+	return func (next pm.MessagePublisher) pm.MessagePublisher {
+		return func (ctx context.Context, topic *pubsub.Topic, m *pubsub.Message) *pubsub.PublishResult {
+			// do something before publishing 
+			result := next(ctx, topic, m)
+			// do something after publishing 
+			return result
+		}
+	}
 }
 ```
 
 - subscription middleware
 ```go
 func MySubscriptionInterceptor() pm.SubscriptionInterceptor {
-    return func(_ *pm.SubscriptionInfo, next pm.MessageHandler) pm.MessageHandler {
-        return func(ctx context.Context, m *pubsub.Message) error {
-            // do something before subscribing
-            err := next(ctx, m)
-			// do something after subscribing
+	return func(_ *pm.SubscriptionInfo, next pm.MessageHandler) pm.MessageHandler {
+		return func(ctx context.Context, m *pubsub.Message) error {
+			// do something before subscribing 
+			err := next(ctx, m) 
+			// do something after subscribing 
 			return err
-        }
-    }
+		}
+	}
 }
 ```
