@@ -6,18 +6,21 @@ import (
 	"errors"
 	"fmt"
 	"github.com/k-yomo/pm"
+	"github.com/k-yomo/pm/middleware/logging/pm_zap"
 	"github.com/k-yomo/pm/middleware/pm_autoack"
 	"github.com/k-yomo/pm/middleware/pm_recovery"
+	"go.uber.org/zap"
 	"os"
 	"os/signal"
 	"syscall"
 )
 
 func main() {
+	logger, _ := zap.NewProduction()
 	ctx := context.Background()
 	pubsubClient, err := pubsub.NewClient(ctx, "pm-example")
 	if err != nil {
-		panic(err)
+		logger.Fatal("initialize pubsub client failed", zap.Error(err))
 	}
 	defer pubsubClient.Close()
 
@@ -30,6 +33,7 @@ func main() {
 		pubsubClient,
 		pm.WithSubscriptionInterceptor(
 			pm_recovery.SubscriptionInterceptor(pm_recovery.WithDebugRecoveryHandler()),
+			pm_zap.SubscriptionInterceptor(logger),
 			pm_autoack.SubscriptionInterceptor(),
 		),
 	)
@@ -37,7 +41,7 @@ func main() {
 
 	err = pubsubSubscriber.HandleSubscriptionFunc("example-topic-sub", exampleSubscriptionHandler)
 	if err != nil {
-		panic(err)
+		logger.Fatal("register subscription failed", zap.Error(err))
 	}
 
 	pubsubSubscriber.Run(ctx)
