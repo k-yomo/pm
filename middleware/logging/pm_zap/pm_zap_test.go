@@ -39,8 +39,16 @@ func TestSubscriptionInterceptor(t *testing.T) {
 			intercepter := SubscriptionInterceptor(logger)
 			callHandler(intercepter(testSubInfo, successMessageHandler))
 
-			if obs.Len() != 1 {
-				t.Errorf("INFO log is expected to be emitted")
+			if got := obs.Len(); got != 1 {
+				t.Fatalf("Only 1 log is expected to be emitted, got: %v, want: %v", got, 1)
+			}
+			entry := obs.All()[0]
+			if got := entry.Level; got != zap.InfoLevel {
+				t.Errorf("INFO log is expected to be emitted, got: %v, want: %v", got, zap.InfoLevel)
+			}
+			wantMessage := "finished processing message 'message-id'"
+			if entry.Message != wantMessage {
+				t.Errorf("INFO log is expected to be emitted, got: %v, want: %v", entry.Message, wantMessage)
 			}
 		})
 
@@ -53,8 +61,16 @@ func TestSubscriptionInterceptor(t *testing.T) {
 			intercepter := SubscriptionInterceptor(logger)
 			callHandler(intercepter(testSubInfo, failureMessageHandler))
 
-			if obs.Len() != 1 {
-				t.Errorf("ERROR log is expected to be emitted")
+			if got := obs.Len(); got != 1 {
+				t.Fatalf("Only 1 log is expected to be emitted, got: %v, want: %v", got, 1)
+			}
+			entry := obs.All()[0]
+			if got := entry.Level; got != zap.ErrorLevel {
+				t.Errorf("INFO log is expected to be emitted, got: %v, want: %v", got, zap.ErrorLevel)
+			}
+			wantMessage := "finished processing message 'message-id'"
+			if entry.Message != wantMessage {
+				t.Errorf("INFO log is expected to be emitted, got: %v, want: %v", entry.Message, wantMessage)
 			}
 		})
 	})

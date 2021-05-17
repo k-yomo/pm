@@ -20,7 +20,7 @@ type MessageProducer func(ctx context.Context, msg string, err error, duration t
 // DefaultMessageProducer writes the default message
 func DefaultMessageProducer(ctx context.Context, msg string, err error, duration time.Duration) {
 	logger := ctxzap.Extract(ctx)
-	durationField := zap.Float32("pubsub.time_ms", durationToMilliseconds(duration))
+	durationField := zap.Float32("pubsub.time_ms", pm_logging.DurationToMilliseconds(duration))
 	if err != nil {
 		logger.Error(msg, zap.Error(err), durationField)
 	} else {
@@ -59,8 +59,4 @@ func WithMessageProducer(f MessageProducer) Option {
 	return newOptionFunc(func(o *options) {
 		o.messageProducer = f
 	})
-}
-
-func durationToMilliseconds(duration time.Duration) float32 {
-	return float32(duration.Nanoseconds()/1000) / 1000
 }
