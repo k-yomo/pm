@@ -97,26 +97,26 @@ func exampleSubscriptionHandler(ctx context.Context, m *pubsub.Message) error {
 
 ### Core Middleware
 
-pm comes equipped with an optional middleware package named `pm_*`.
+pm comes equipped with an optional middleware packages named `pm_*`.
 
-#### Publisher middleware
+#### Publish interceptor
 
-| middleware                                                                                                 | description                                                              |
+| interceptor                                                                                                | description                                                              |
 |------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
-| [Attributes](https://pkg.go.dev/github.com/k-yomo/pm/middleware/pm_attributes#PublishInterceptor)          | Set custom attributes to all outgoing messages when publish              |
+| [Attributes](https://pkg.go.dev/github.com/k-yomo/pm/interceptor/pm_attributes#PublishInterceptor)          | Set custom attributes to all outgoing messages when publish              |
 
-#### Subscription middleware
+#### Subscription interceptor
 
-| middleware                                                                                                        | description                                                              |
+| interceptor                                                                                                       | description                                                              |
 |-------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
-| [Auto Ack](https://pkg.go.dev/github.com/k-yomo/pm/middleware/pm_autoack#SubscriptionInterceptor)                 | Ack automatically depending on if error is returned when subscribe       |
-| [Logging - Zap](https://pkg.go.dev/github.com/k-yomo/pm/middleware/logging/pm_zap#SubscriptionInterceptor)        | Emit an informative zap log when subscription processing finish          |
-| [Logging - Logrus](https://pkg.go.dev/github.com/k-yomo/pm/middleware/logging/logrus_zap#SubscriptionInterceptor) | Emit an informative logrus log when subscription processing finish       |
-| [Recovery](https://pkg.go.dev/github.com/k-yomo/pm/middleware/pm_recovery#SubscriptionInterceptor)                | Gracefully recover from panics and prints the stack trace when subscribe |
+| [Auto Ack](https://pkg.go.dev/github.com/k-yomo/pm/interceptor/pm_autoack#SubscriptionInterceptor)                 | Ack automatically depending on if error is returned when subscribe       |
+| [Logging - Zap](https://pkg.go.dev/github.com/k-yomo/pm/interceptor/logging/pm_zap#SubscriptionInterceptor)        | Emit an informative zap log when subscription processing finish          |
+| [Logging - Logrus](https://pkg.go.dev/github.com/k-yomo/pm/interceptor/logging/logrus_zap#SubscriptionInterceptor) | Emit an informative logrus log when subscription processing finish       |
+| [Recovery](https://pkg.go.dev/github.com/k-yomo/pm/interceptor/pm_recovery#SubscriptionInterceptor)                | Gracefully recover from panics and prints the stack trace when subscribe |
 
-#### Custom middleware
+#### Custom Middleware
 pm middleware is just wrapping publishing / subscribing process which means you can define your custom middleware as well.
-- publisher middleware
+- publisher interceptor
 ```go
 func MyPublishInterceptor(attrs map[string]string) pm.PublishInterceptor {
 	return func (next pm.MessagePublisher) pm.MessagePublisher {
@@ -130,7 +130,7 @@ func MyPublishInterceptor(attrs map[string]string) pm.PublishInterceptor {
 }
 ```
 
-- subscription middleware
+- subscription interceptor
 ```go
 func MySubscriptionInterceptor() pm.SubscriptionInterceptor {
 	return func(_ *pm.SubscriptionInfo, next pm.MessageHandler) pm.MessageHandler {
