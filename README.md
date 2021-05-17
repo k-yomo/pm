@@ -107,11 +107,12 @@ pm comes equipped with an optional middleware package named `pm_*`.
 
 #### Subscription middleware
 
-| middleware                                                                                                 | description                                                              |
-|------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
-| [Auto Ack](https://pkg.go.dev/github.com/k-yomo/pm/middleware/pm_autoack#SubscriptionInterceptor)          | Ack automatically depending on if error is returned when subscribe       |
-| [Logging - Zap](https://pkg.go.dev/github.com/k-yomo/pm/middleware/logging/pm_zap#SubscriptionInterceptor) | Emit an informative log when subscription processing finish              |
-| [Recovery](https://pkg.go.dev/github.com/k-yomo/pm/middleware/pm_recovery#SubscriptionInterceptor)         | Gracefully recover from panics and prints the stack trace when subscribe |
+| middleware                                                                                                        | description                                                              |
+|-------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| [Auto Ack](https://pkg.go.dev/github.com/k-yomo/pm/middleware/pm_autoack#SubscriptionInterceptor)                 | Ack automatically depending on if error is returned when subscribe       |
+| [Logging - Zap](https://pkg.go.dev/github.com/k-yomo/pm/middleware/logging/pm_zap#SubscriptionInterceptor)        | Emit an informative zap log when subscription processing finish          |
+| [Logging - Logrus](https://pkg.go.dev/github.com/k-yomo/pm/middleware/logging/logrus_zap#SubscriptionInterceptor) | Emit an informative logrus log when subscription processing finish       |
+| [Recovery](https://pkg.go.dev/github.com/k-yomo/pm/middleware/pm_recovery#SubscriptionInterceptor)                | Gracefully recover from panics and prints the stack trace when subscribe |
 
 #### Custom middleware
 pm middleware is just wrapping publishing / subscribing process which means you can define your custom middleware as well.
