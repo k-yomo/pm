@@ -14,6 +14,17 @@ jobs:
         image: knarz/pubsub-emulator
         ports:
           - 8085:8085
+      datastore:
+        image: singularities/datastore-emulator
+        ports:
+          - 8081:8081
+        env:
+          DATASTORE_PROJECT_ID: test
+          DATASTORE_LISTEN_ADDRESS: 0.0.0.0:8081
+      redis:
+        image: redis:5.0
+        ports:
+          - 6379:6379
 
     steps:
       - name: Checkout
@@ -38,8 +49,11 @@ jobs:
         run: go mod download
 
       - name: Test
-        run: PUBSUB_EMULATOR_HOST=localhost:8085 go test -v -race -coverprofile=coverage.out ./...
-
+        run: go test -v -race -coverprofile=coverage.out ./...
+        env:
+          PUBSUB_EMULATOR_HOST: localhost:8085
+          DATASTORE_EMULATOR_HOST: localhost:8081
+          REDIS_URL: localhost:6379
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:

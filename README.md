@@ -107,9 +107,10 @@ pm comes equipped with an optional middleware packages named `pm_*`.
 
 #### Subscription interceptor
 
-| interceptor                                                                                                       | description                                                              |
-|-------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| interceptor                                                                                                        | description                                                              |
+|--------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
 | [Auto Ack](https://pkg.go.dev/github.com/k-yomo/pm/interceptor/pm_autoack#SubscriptionInterceptor)                 | Ack automatically depending on if error is returned when subscribe       |
+| [Effectively Once](https://pkg.go.dev/github.com/k-yomo/pm/interceptor/pm_effectively_once#SubscriptionInterceptor)| De-duplicate messages with the same de-duplicate key                     |
 | [Logging - Zap](https://pkg.go.dev/github.com/k-yomo/pm/interceptor/logging/pm_zap#SubscriptionInterceptor)        | Emit an informative zap log when subscription processing finish          |
 | [Logging - Logrus](https://pkg.go.dev/github.com/k-yomo/pm/interceptor/logging/logrus_zap#SubscriptionInterceptor) | Emit an informative logrus log when subscription processing finish       |
 | [Recovery](https://pkg.go.dev/github.com/k-yomo/pm/interceptor/pm_recovery#SubscriptionInterceptor)                | Gracefully recover from panics and prints the stack trace when subscribe |
