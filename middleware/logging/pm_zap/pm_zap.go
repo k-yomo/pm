@@ -28,7 +28,7 @@ func SubscriptionInterceptor(logger *zap.Logger, opt ...Option) pm.SubscriptionI
 			startTime := time.Now()
 			newCtx := newLoggerForProcess(ctx, logger, info, startTime, opts.timestampFormat)
 
-			err := next(ctxzap.ToContext(newCtx, logger), m)
+			err := next(newCtx, m)
 
 			if opts.shouldLog(info, err) {
 				opts.messageProducer(
