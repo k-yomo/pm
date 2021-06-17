@@ -34,8 +34,8 @@ func TestSubscriptionInterceptor(t *testing.T) {
 			t.Parallel()
 
 			logger, hook := test.NewNullLogger()
-			intercepter := SubscriptionInterceptor(logger)
-			callHandler(intercepter(testSubInfo, successMessageHandler))
+			interceptor := SubscriptionInterceptor(logger)
+			callHandler(interceptor(testSubInfo, successMessageHandler))
 
 			if got := len(hook.Entries); got != 1 {
 				t.Fatalf("Only 1 log is expected to be emitted, got: %v, want: %v", got, 1)
@@ -54,8 +54,8 @@ func TestSubscriptionInterceptor(t *testing.T) {
 			t.Parallel()
 
 			logger, hook := test.NewNullLogger()
-			intercepter := SubscriptionInterceptor(logger)
-			callHandler(intercepter(testSubInfo, failureMessageHandler))
+			interceptor := SubscriptionInterceptor(logger)
+			callHandler(interceptor(testSubInfo, failureMessageHandler))
 
 			if got := len(hook.Entries); got != 1 {
 				t.Fatalf("Only 1 log is expected to be emitted, got: %v, want: %v", got, 1)
@@ -76,10 +76,10 @@ func TestSubscriptionInterceptor(t *testing.T) {
 			t.Parallel()
 
 			logger, hook := test.NewNullLogger()
-			intercepter := SubscriptionInterceptor(logger, WithLogDecider(func(info *pm.SubscriptionInfo, err error) bool {
+			interceptor := SubscriptionInterceptor(logger, WithLogDecider(func(info *pm.SubscriptionInfo, err error) bool {
 				return false
 			}))
-			callHandler(intercepter(testSubInfo, successMessageHandler))
+			callHandler(interceptor(testSubInfo, successMessageHandler))
 
 			if len(hook.Entries) != 0 {
 				t.Errorf("log is not expected to be emitted")

@@ -36,8 +36,8 @@ func TestSubscriptionInterceptor(t *testing.T) {
 			core, obs := zapobserver.New(zap.InfoLevel)
 			logger := zap.New(core)
 
-			intercepter := SubscriptionInterceptor(logger)
-			callHandler(intercepter(testSubInfo, successMessageHandler))
+			interceptor := SubscriptionInterceptor(logger)
+			callHandler(interceptor(testSubInfo, successMessageHandler))
 
 			if got := obs.Len(); got != 1 {
 				t.Fatalf("Only 1 log is expected to be emitted, got: %v, want: %v", got, 1)
@@ -58,8 +58,8 @@ func TestSubscriptionInterceptor(t *testing.T) {
 			core, obs := zapobserver.New(zap.ErrorLevel)
 			logger := zap.New(core)
 
-			intercepter := SubscriptionInterceptor(logger)
-			callHandler(intercepter(testSubInfo, failureMessageHandler))
+			interceptor := SubscriptionInterceptor(logger)
+			callHandler(interceptor(testSubInfo, failureMessageHandler))
 
 			if got := obs.Len(); got != 1 {
 				t.Fatalf("Only 1 log is expected to be emitted, got: %v, want: %v", got, 1)
@@ -82,10 +82,10 @@ func TestSubscriptionInterceptor(t *testing.T) {
 			core, obs := zapobserver.New(zap.DebugLevel)
 			logger := zap.New(core)
 
-			intercepter := SubscriptionInterceptor(logger, WithLogDecider(func(info *pm.SubscriptionInfo, err error) bool {
+			interceptor := SubscriptionInterceptor(logger, WithLogDecider(func(info *pm.SubscriptionInfo, err error) bool {
 				return false
 			}))
-			callHandler(intercepter(testSubInfo, successMessageHandler))
+			callHandler(interceptor(testSubInfo, successMessageHandler))
 
 			if obs.Len() != 0 {
 				t.Errorf("log is not expected to be emitted")
