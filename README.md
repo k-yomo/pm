@@ -103,17 +103,17 @@ pm comes equipped with an optional middleware packages named `pm_*`.
 
 | interceptor                                                                                                | description                                                              |
 |------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
-| [Attributes](https://pkg.go.dev/github.com/k-yomo/pm/interceptor/pm_attributes#PublishInterceptor)          | Set custom attributes to all outgoing messages when publish              |
+| [Attributes](https://pkg.go.dev/github.com/k-yomo/pm/middleware/pm_attributes#PublishInterceptor)          | Set custom attributes to all outgoing messages when publish              |
 
 #### Subscription interceptor
 
 | interceptor                                                                                                        | description                                                              |
 |--------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
-| [Auto Ack](https://pkg.go.dev/github.com/k-yomo/pm/interceptor/pm_autoack#SubscriptionInterceptor)                 | Ack automatically depending on if error is returned when subscribe       |
-| [Effectively Once](https://pkg.go.dev/github.com/k-yomo/pm/interceptor/pm_effectively_once#SubscriptionInterceptor)| De-duplicate messages with the same de-duplicate key                     |
-| [Logging - Zap](https://pkg.go.dev/github.com/k-yomo/pm/interceptor/logging/pm_zap#SubscriptionInterceptor)        | Emit an informative zap log when subscription processing finish          |
-| [Logging - Logrus](https://pkg.go.dev/github.com/k-yomo/pm/interceptor/logging/logrus_zap#SubscriptionInterceptor) | Emit an informative logrus log when subscription processing finish       |
-| [Recovery](https://pkg.go.dev/github.com/k-yomo/pm/interceptor/pm_recovery#SubscriptionInterceptor)                | Gracefully recover from panics and prints the stack trace when subscribe |
+| [Auto Ack](https://pkg.go.dev/github.com/k-yomo/pm/middleware/pm_autoack#SubscriptionInterceptor)                 | Ack automatically depending on if error is returned when subscribe       |
+| [Effectively Once](https://pkg.go.dev/github.com/k-yomo/pm/middleware/pm_effectively_once#SubscriptionInterceptor)| De-duplicate messages with the same de-duplicate key                     |
+| [Logging - Zap](https://pkg.go.dev/github.com/k-yomo/pm/middleware/logging/pm_zap#SubscriptionInterceptor)        | Emit an informative zap log when subscription processing finish          |
+| [Logging - Logrus](https://pkg.go.dev/github.com/k-yomo/pm/middleware/logging/logrus_zap#SubscriptionInterceptor) | Emit an informative logrus log when subscription processing finish       |
+| [Recovery](https://pkg.go.dev/github.com/k-yomo/pm/interceptor/middleware#SubscriptionInterceptor)                | Gracefully recover from panics and prints the stack trace when subscribe |
 
 #### Custom Middleware
 pm middleware is just wrapping publishing / subscribing process which means you can define your custom middleware as well.
