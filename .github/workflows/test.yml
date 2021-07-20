@@ -55,7 +55,7 @@ jobs:
           DATASTORE_EMULATOR_HOST: localhost:8081
           REDIS_URL: localhost:6379
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v2.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.out
