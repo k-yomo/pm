@@ -5,7 +5,7 @@ go 1.16
 require (
 	cloud.google.com/go/datastore v1.5.0
 	cloud.google.com/go/pubsub v1.13.0
-	github.com/go-redis/redis/v8 v8.11.1
+	github.com/go-redis/redis/v8 v8.11.2
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/pkg/errors v0.9.1 // indirect
