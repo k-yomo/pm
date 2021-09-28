@@ -3,7 +3,7 @@ module github.com/k-yomo/pm
 go 1.16
 
 require (
-	cloud.google.com/go/datastore v1.5.0
+	cloud.google.com/go/datastore v1.6.0
 	cloud.google.com/go/pubsub v1.17.0
 	github.com/go-redis/redis/v8 v8.11.3
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
