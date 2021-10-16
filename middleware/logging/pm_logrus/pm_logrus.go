@@ -1,14 +1,15 @@
 package pm_logrus
 
 import (
-	"cloud.google.com/go/pubsub"
 	"context"
 	"fmt"
+	"time"
+
+	"cloud.google.com/go/pubsub"
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus/ctxlogrus"
 	"github.com/k-yomo/pm"
 	pm_logging "github.com/k-yomo/pm/middleware/logging"
 	"github.com/sirupsen/logrus"
-	"time"
 )
 
 // SubscriptionInterceptor returns a subscription interceptor that optionally logs the subscription process.

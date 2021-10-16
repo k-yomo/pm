@@ -1,8 +1,9 @@
 package pm_effectively_once
 
 import (
-	"cloud.google.com/go/datastore"
 	"context"
+
+	"cloud.google.com/go/datastore"
 )
 
 type datastoreMutexer struct {

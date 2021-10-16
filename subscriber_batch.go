@@ -1,15 +1,16 @@
 package pm
 
 import (
-	"cloud.google.com/go/pubsub"
 	"context"
 	"fmt"
-	"google.golang.org/api/support/bundler"
-	pb "google.golang.org/genproto/googleapis/pubsub/v1"
-	"google.golang.org/protobuf/proto"
 	"strings"
 	"sync"
 	"time"
+
+	"cloud.google.com/go/pubsub"
+	"google.golang.org/api/support/bundler"
+	pb "google.golang.org/genproto/googleapis/pubsub/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 // BatchError is used to handle error for each message

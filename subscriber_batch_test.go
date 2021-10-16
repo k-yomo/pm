@@ -1,15 +1,16 @@
 package pm
 
 import (
-	"cloud.google.com/go/pubsub"
 	"context"
 	"errors"
+	"testing"
+	"time"
+
+	"cloud.google.com/go/pubsub"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/api/support/bundler"
-	"testing"
-	"time"
 )
 
 func TestBatchError_Error(t *testing.T) {

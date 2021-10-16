@@ -1,11 +1,12 @@
 package pm_effectively_once
 
 import (
-	"cloud.google.com/go/pubsub"
 	"context"
-	"github.com/k-yomo/pm"
 	"sync"
 	"testing"
+
+	"cloud.google.com/go/pubsub"
+	"github.com/k-yomo/pm"
 )
 
 type testMutexer struct {

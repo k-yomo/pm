@@ -1,10 +1,11 @@
 package pm_recovery
 
 import (
-	"cloud.google.com/go/pubsub"
 	"context"
-	"github.com/k-yomo/pm"
 	"testing"
+
+	"cloud.google.com/go/pubsub"
+	"github.com/k-yomo/pm"
 )
 
 func TestSubscriptionInterceptor(t *testing.T) {

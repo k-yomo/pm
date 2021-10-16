@@ -1,15 +1,16 @@
 package pm_zap
 
 import (
-	"cloud.google.com/go/pubsub"
 	"context"
 	"fmt"
+	"time"
+
+	"cloud.google.com/go/pubsub"
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
 	"github.com/k-yomo/pm"
 	pm_logging "github.com/k-yomo/pm/middleware/logging"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"time"
 )
 
 // SubscriptionInterceptor returns a subscription interceptor that optionally logs the subscription process.

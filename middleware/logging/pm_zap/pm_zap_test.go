@@ -1,13 +1,14 @@
 package pm_zap
 
 import (
-	"cloud.google.com/go/pubsub"
 	"context"
 	"errors"
+	"testing"
+
+	"cloud.google.com/go/pubsub"
 	"github.com/k-yomo/pm"
 	"go.uber.org/zap"
 	zapobserver "go.uber.org/zap/zaptest/observer"
-	"testing"
 )
 
 func TestSubscriptionInterceptor(t *testing.T) {

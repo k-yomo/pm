@@ -1,8 +1,9 @@
 package pm
 
 import (
-	"cloud.google.com/go/pubsub"
 	"context"
+
+	"cloud.google.com/go/pubsub"
 )
 
 // MessagePublisher defines the message publisher invoked by PublishInterceptor to complete the normal

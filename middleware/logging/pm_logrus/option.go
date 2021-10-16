@@ -2,10 +2,11 @@ package pm_logrus
 
 import (
 	"context"
+	"time"
+
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus/ctxlogrus"
 	pm_logging "github.com/k-yomo/pm/middleware/logging"
 	"github.com/sirupsen/logrus"
-	"time"
 )
 
 type options struct {

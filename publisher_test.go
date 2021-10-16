@@ -1,13 +1,14 @@
 package pm
 
 import (
-	"cloud.google.com/go/pubsub"
 	"context"
 	"fmt"
 	"reflect"
 	"sync"
 	"testing"
 	"time"
+
+	"cloud.google.com/go/pubsub"
 )
 
 type publisherOptionForTest struct {

@@ -2,8 +2,9 @@ package pm_effectively_once
 
 import (
 	"context"
-	"github.com/go-redis/redis/v8"
 	"time"
+
+	"github.com/go-redis/redis/v8"
 )
 
 type redisMutexer struct {

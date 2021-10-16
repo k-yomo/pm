@@ -1,8 +1,9 @@
 package pm_effectively_once
 
 import (
-	"github.com/rs/xid"
 	"testing"
+
+	"github.com/rs/xid"
 )
 
 func randString(t *testing.T, length int) string {

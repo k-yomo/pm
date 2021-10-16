@@ -3,10 +3,11 @@ package pm_effectively_once
 import (
 	"context"
 	"errors"
-	"github.com/go-redis/redis/v8"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/go-redis/redis/v8"
 )
 
 func Test_redisMutexer_RunInTx(t *testing.T) {

@@ -1,19 +1,20 @@
 package main
 
 import (
-	"cloud.google.com/go/pubsub"
 	"context"
 	"errors"
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	"cloud.google.com/go/pubsub"
 	"github.com/k-yomo/pm"
 	"github.com/k-yomo/pm/middleware/logging/pm_zap"
 	"github.com/k-yomo/pm/middleware/pm_autoack"
 	"github.com/k-yomo/pm/middleware/pm_recovery"
 	"go.uber.org/zap"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
 )
 
 func main() {

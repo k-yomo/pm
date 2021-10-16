@@ -2,9 +2,10 @@ package pm_logrus
 
 import (
 	"context"
-	"github.com/k-yomo/pm"
 	"testing"
 	"time"
+
+	"github.com/k-yomo/pm"
 )
 
 func TestWithLogDecider(t *testing.T) {

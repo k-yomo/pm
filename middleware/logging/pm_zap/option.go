@@ -2,10 +2,11 @@ package pm_zap
 
 import (
 	"context"
-	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
-	"github.com/k-yomo/pm/middleware/logging"
-	"go.uber.org/zap"
 	"time"
+
+	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
+	pm_logging "github.com/k-yomo/pm/middleware/logging"
+	"go.uber.org/zap"
 )
 
 type options struct {

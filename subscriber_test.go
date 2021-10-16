@@ -1,7 +1,6 @@
 package pm
 
 import (
-	"cloud.google.com/go/pubsub"
 	"context"
 	"fmt"
 	"log"
@@ -10,6 +9,8 @@ import (
 	"sync/atomic"
 	"testing"
 	"time"
+
+	"cloud.google.com/go/pubsub"
 )
 
 type subscriberOptionForTest struct {

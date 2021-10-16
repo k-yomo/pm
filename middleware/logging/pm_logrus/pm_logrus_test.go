@@ -1,13 +1,14 @@
 package pm_logrus
 
 import (
-	"cloud.google.com/go/pubsub"
 	"context"
 	"errors"
+	"testing"
+
+	"cloud.google.com/go/pubsub"
 	"github.com/k-yomo/pm"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
-	"testing"
 )
 
 func TestSubscriptionInterceptor(t *testing.T) {

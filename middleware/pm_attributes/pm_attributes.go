@@ -1,8 +1,9 @@
 package pm_attributes
 
 import (
-	"cloud.google.com/go/pubsub"
 	"context"
+
+	"cloud.google.com/go/pubsub"
 	"github.com/k-yomo/pm"
 )
 

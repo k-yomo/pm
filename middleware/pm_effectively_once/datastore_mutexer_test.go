@@ -1,10 +1,11 @@
 package pm_effectively_once
 
 import (
-	"cloud.google.com/go/datastore"
 	"context"
 	"errors"
 	"testing"
+
+	"cloud.google.com/go/datastore"
 )
 
 func Test_datastoreMutexer_RunInTx(t *testing.T) {

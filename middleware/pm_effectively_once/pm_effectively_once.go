@@ -1,8 +1,9 @@
 package pm_effectively_once
 
 import (
-	"cloud.google.com/go/pubsub"
 	"context"
+
+	"cloud.google.com/go/pubsub"
 	"github.com/k-yomo/pm"
 )
 

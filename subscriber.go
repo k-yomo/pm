@@ -1,11 +1,12 @@
 package pm
 
 import (
-	"cloud.google.com/go/pubsub"
 	"context"
 	"fmt"
-	"golang.org/x/sync/errgroup"
 	"log"
+
+	"cloud.google.com/go/pubsub"
+	"golang.org/x/sync/errgroup"
 )
 
 // Subscriber represents a wrapper of Pub/Sub client mainly focusing on pull subscription.
