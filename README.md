@@ -31,6 +31,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 func main() {
@@ -57,7 +58,15 @@ func main() {
 	)
 	defer pubsubSubscriber.Close()
 
-	err = pubsubSubscriber.HandleSubscriptionFunc("example-topic-sub", exampleSubscriptionHandler)
+	err = pubsubSubscriber.HandleSubscriptionFuncMap(map[string]pm.MessageHandler{
+		"example-topic-sub": exampleSubscriptionHandler,
+		"example-topic-batch-sub": pm.NewBatchMessageHandler(exampleSubscriptionBatchHandler, pm.BatchMessageHandlerConfig{
+			DelayThreshold:    100 * time.Millisecond,
+			CountThreshold:    1000,
+			ByteThreshold:     1e6,
+			BufferedByteLimit: 1e8,
+		}),
+	})
 	if err != nil {
 		logger.Fatal("register subscription failed", zap.Error(err))
 	}
@@ -84,12 +93,25 @@ func exampleSubscriptionHandler(ctx context.Context, m *pubsub.Message) error {
 	}
 
 	if dataStr == "error" {
-		fmt.Println("nack will be called to retry")
 		return errors.New("error")
 	}
 
 	fmt.Println(dataStr)
 	return nil
+}
+
+func exampleSubscriptionBatchHandler(messages []*pubsub.Message) error {
+	batchErr := make(pm.BatchError)
+	for _, m := range messages {
+		dataStr := string(m.Data)
+		if dataStr == "error" {
+			batchErr[m.ID] = errors.New("error")
+		} else {
+			fmt.Println(dataStr)
+		}
+	}
+
+	return batchErr
 }
 ```
 
