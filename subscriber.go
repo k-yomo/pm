@@ -42,18 +42,17 @@ func NewSubscriber(pubsubClient *pubsub.Client, opt ...SubscriberOption) *Subscr
 
 // HandleSubscriptionFunc registers subscription handler for the given id's subscription.
 // If subscription does not exist, it will return error.
-func (s *Subscriber) HandleSubscriptionFunc(subscriptionID string, f MessageHandler) error {
-	if _, ok := s.subscriptionHandlers[subscriptionID]; ok {
-		return fmt.Errorf("handler for subscription '%s' is already registered", subscriptionID)
+func (s *Subscriber) HandleSubscriptionFunc(subscription *pubsub.Subscription, f MessageHandler) error {
+	if _, ok := s.subscriptionHandlers[subscription.ID()]; ok {
+		return fmt.Errorf("handler for subscription '%s' is already registered", subscription.ID())
 	}
-	sub := s.pubsubClient.Subscription(subscriptionID)
-	cfg, err := sub.Config(context.Background())
+	cfg, err := subscription.Config(context.Background())
 	if err != nil {
 		return err
 	}
-	s.subscriptionHandlers[subscriptionID] = &subscriptionHandler{
+	s.subscriptionHandlers[subscription.ID()] = &subscriptionHandler{
 		topicID:      cfg.Topic.ID(),
-		subscription: sub,
+		subscription: subscription,
 		handleFunc:   f,
 	}
 
@@ -62,13 +61,12 @@ func (s *Subscriber) HandleSubscriptionFunc(subscriptionID string, f MessageHand
 
 // HandleSubscriptionFuncMap registers multiple subscription handlers at once.
 // This function take map of key[subscription id]: value[corresponding message handler] pairs.
-func (s *Subscriber) HandleSubscriptionFuncMap(funcMap map[string]MessageHandler) error {
+func (s *Subscriber) HandleSubscriptionFuncMap(funcMap map[*pubsub.Subscription]MessageHandler) error {
 	eg := errgroup.Group{}
-	for subscriptionID, f := range funcMap {
-		subscriptionID := subscriptionID
-		f := f
+	for sub, f := range funcMap {
+		sub, f := sub, f
 		eg.Go(func() error {
-			return s.HandleSubscriptionFunc(subscriptionID, f)
+			return s.HandleSubscriptionFunc(sub, f)
 		})
 	}
 	return eg.Wait()

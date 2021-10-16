@@ -59,9 +59,11 @@ func main() {
 	)
 	defer pubsubSubscriber.Close()
 
-	err = pubsubSubscriber.HandleSubscriptionFuncMap(map[string]pm.MessageHandler{
-		"example-topic-sub": exampleSubscriptionHandler,
-		"example-topic-batch-sub": pm.NewBatchMessageHandler(exampleSubscriptionBatchHandler, pm.BatchMessageHandlerConfig{
+	sub := pubsubClient.Subscription("example-topic-sub")
+	batchSub := pubsubClient.Subscription("example-topic-batch-sub")
+	err = pubsubSubscriber.HandleSubscriptionFuncMap(map[*pubsub.Subscription]pm.MessageHandler{
+		sub: exampleSubscriptionHandler,
+		batchSub: pm.NewBatchMessageHandler(exampleSubscriptionBatchHandler, pm.BatchMessageHandlerConfig{
 			DelayThreshold:    100 * time.Millisecond,
 			CountThreshold:    1000,
 			ByteThreshold:     1e6,
