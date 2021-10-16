@@ -80,8 +80,8 @@ func TestSubscriber_HandleSubscriptionFunc(t *testing.T) {
 	}
 
 	type args struct {
-		subscriptionID string
-		f              MessageHandler
+		subscription *pubsub.Subscription
+		f            MessageHandler
 	}
 	tests := []struct {
 		name       string
@@ -93,20 +93,20 @@ func TestSubscriber_HandleSubscriptionFunc(t *testing.T) {
 			name:       "sets subscription handler",
 			subscriber: NewSubscriber(pubsubClient),
 			args: args{
-				subscriptionID: sub.ID(),
-				f:              func(ctx context.Context, m *pubsub.Message) error { return nil },
+				subscription: sub,
+				f:            func(ctx context.Context, m *pubsub.Message) error { return nil },
 			},
 		},
 		{
 			name: "when a handler is already registered for the give subscription id, it returns error",
 			subscriber: func() *Subscriber {
 				s := NewSubscriber(pubsubClient)
-				_ = s.HandleSubscriptionFunc(sub.ID(), func(ctx context.Context, m *pubsub.Message) error { return nil })
+				_ = s.HandleSubscriptionFunc(sub, func(ctx context.Context, m *pubsub.Message) error { return nil })
 				return s
 			}(),
 			args: args{
-				subscriptionID: sub.ID(),
-				f:              func(ctx context.Context, m *pubsub.Message) error { return nil },
+				subscription: sub,
+				f:            func(ctx context.Context, m *pubsub.Message) error { return nil },
 			},
 			wantErr: true,
 		},
@@ -114,8 +114,8 @@ func TestSubscriber_HandleSubscriptionFunc(t *testing.T) {
 			name:       "when the subscription does not exist, it returns error",
 			subscriber: NewSubscriber(pubsubClient),
 			args: args{
-				subscriptionID: "invalid",
-				f:              nil,
+				subscription: pubsubClient.Subscription("invalid"),
+				f:            nil,
 			},
 			wantErr: true,
 		},
@@ -124,12 +124,12 @@ func TestSubscriber_HandleSubscriptionFunc(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			if err := tt.subscriber.HandleSubscriptionFunc(tt.args.subscriptionID, tt.args.f); (err != nil) != tt.wantErr {
+			if err := tt.subscriber.HandleSubscriptionFunc(tt.args.subscription, tt.args.f); (err != nil) != tt.wantErr {
 				t.Errorf("HandleSubscriptionFunc() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
 			if !tt.wantErr {
-				if _, ok := tt.subscriber.subscriptionHandlers[tt.args.subscriptionID]; !ok {
+				if _, ok := tt.subscriber.subscriptionHandlers[tt.args.subscription.ID()]; !ok {
 					t.Errorf("HandleSubscriptionFunc() is expected to set subscription handler")
 				}
 			}
@@ -160,7 +160,7 @@ func TestSubscriber_HandleSubscriptionFuncMap(t *testing.T) {
 	}
 
 	type args struct {
-		funcMap map[string]MessageHandler
+		funcMap map[*pubsub.Subscription]MessageHandler
 	}
 	tests := []struct {
 		name       string
@@ -172,8 +172,8 @@ func TestSubscriber_HandleSubscriptionFuncMap(t *testing.T) {
 			name:       "sets subscription handler",
 			subscriber: NewSubscriber(pubsubClient),
 			args: args{
-				funcMap: map[string]MessageHandler{
-					sub.ID(): func(ctx context.Context, m *pubsub.Message) error { return nil },
+				funcMap: map[*pubsub.Subscription]MessageHandler{
+					sub: func(ctx context.Context, m *pubsub.Message) error { return nil },
 				},
 			},
 		},
@@ -181,8 +181,8 @@ func TestSubscriber_HandleSubscriptionFuncMap(t *testing.T) {
 			name:       "when the subscription does not exist, it returns error",
 			subscriber: NewSubscriber(pubsubClient),
 			args: args{
-				funcMap: map[string]MessageHandler{
-					"invalid": func(ctx context.Context, m *pubsub.Message) error { return nil },
+				funcMap: map[*pubsub.Subscription]MessageHandler{
+					pubsubClient.Subscription("invalid"): func(ctx context.Context, m *pubsub.Message) error { return nil },
 				},
 			},
 			wantErr: true,
@@ -196,8 +196,8 @@ func TestSubscriber_HandleSubscriptionFuncMap(t *testing.T) {
 				t.Errorf("HandleSubscriptionFuncMap() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
-			for subId, _ := range tt.args.funcMap {
-				if _, ok := tt.subscriber.subscriptionHandlers[subId]; ok == tt.wantErr {
+			for sub, _ := range tt.args.funcMap {
+				if _, ok := tt.subscriber.subscriptionHandlers[sub.ID()]; ok == tt.wantErr {
 					t.Errorf("HandleSubscriptionFuncMap() set: %v, want set: %v", ok, !tt.wantErr)
 				}
 			}
@@ -245,7 +245,7 @@ func TestSubscriber_Run(t *testing.T) {
 
 	wg := sync.WaitGroup{}
 	var receivedCount int64 = 0
-	err = subscriber.HandleSubscriptionFunc(sub.ID(), func(ctx context.Context, m *pubsub.Message) error {
+	err = subscriber.HandleSubscriptionFunc(sub, func(ctx context.Context, m *pubsub.Message) error {
 		defer wg.Done()
 		m.Ack()
 		atomic.AddInt64(&receivedCount, 1)
@@ -301,7 +301,7 @@ func TestSubscriber_Close(t *testing.T) {
 
 	subscriber := NewSubscriber(pubsubClient)
 
-	err = subscriber.HandleSubscriptionFunc(sub.ID(), func(ctx context.Context, m *pubsub.Message) error {
+	err = subscriber.HandleSubscriptionFunc(sub, func(ctx context.Context, m *pubsub.Message) error {
 		m.Ack()
 		t.Error("Must not received messages after close")
 		return nil
