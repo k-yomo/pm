@@ -30,6 +30,7 @@ import (
 	"cloud.google.com/go/pubsub"
 	"github.com/k-yomo/pm"
 	"github.com/k-yomo/pm/middleware/logging/pm_zap"
+	"github.com/k-yomo/pm/middleware/pm_attributes"
 	"github.com/k-yomo/pm/middleware/pm_autoack"
 	"github.com/k-yomo/pm/middleware/pm_recovery"
 	"go.uber.org/zap"
@@ -46,15 +47,17 @@ func main() {
 
 	pubsubPublisher := pm.NewPublisher(
 		pubsubClient,
-		pm.WithPublishInterceptor(),
+		pm.WithPublishInterceptor(
+			pm_attributes.PublishInterceptor(map[string]string{"key": "value"}),
+		),
 	)
 
 	pubsubSubscriber := pm.NewSubscriber(
 		pubsubClient,
 		pm.WithSubscriptionInterceptor(
-			pm_recovery.SubscriptionInterceptor(pm_recovery.WithDebugRecoveryHandler()),
 			pm_zap.SubscriptionInterceptor(logger),
 			pm_autoack.SubscriptionInterceptor(),
+			pm_recovery.SubscriptionInterceptor(pm_recovery.WithDebugRecoveryHandler()),
 		),
 	)
 	defer pubsubSubscriber.Close()
@@ -75,6 +78,7 @@ func main() {
 	}
 
 	pubsubSubscriber.Run(ctx)
+	defer pubsubSubscriber.Close()
 
 	pubsubPublisher.Publish(
 		ctx,
@@ -141,31 +145,36 @@ pm comes equipped with an optional middleware packages named `pm_*`.
 | [Recovery](https://pkg.go.dev/github.com/k-yomo/pm/middleware#SubscriptionInterceptor)                | Gracefully recover from panics and prints the stack trace when subscribe |
 
 #### Custom Middleware
-pm middleware is just wrapping publishing / subscribing process which means you can define your custom middleware as well.
-- publisher interceptor
+
+pm middleware is just wrapping publishing / subscribing process which means you can define your custom middleware as
+well.
+
+- publish interceptor
+
 ```go
 func MyPublishInterceptor(attrs map[string]string) pm.PublishInterceptor {
-	return func (next pm.MessagePublisher) pm.MessagePublisher {
-		return func (ctx context.Context, topic *pubsub.Topic, m *pubsub.Message) *pubsub.PublishResult {
-			// do something before publishing 
-			result := next(ctx, topic, m)
-			// do something after publishing 
-			return result
-		}
-	}
+return func (next pm.MessagePublisher) pm.MessagePublisher {
+return func (ctx context.Context, topic *pubsub.Topic, m *pubsub.Message) *pubsub.PublishResult {
+// do something before publishing 
+result := next(ctx, topic, m)
+// do something after publishing 
+return result
+}
+}
 }
 ```
 
 - subscription interceptor
+
 ```go
 func MySubscriptionInterceptor() pm.SubscriptionInterceptor {
-	return func(_ *pm.SubscriptionInfo, next pm.MessageHandler) pm.MessageHandler {
-		return func(ctx context.Context, m *pubsub.Message) error {
-			// do something before subscribing 
-			err := next(ctx, m) 
-			// do something after subscribing 
-			return err
-		}
-	}
+return func (_ *pm.SubscriptionInfo, next pm.MessageHandler) pm.MessageHandler {
+return func (ctx context.Context, m *pubsub.Message) error {
+// do something before subscribing 
+err := next(ctx, m)
+// do something after subscribing 
+return err
+}
+}
 }
 ```

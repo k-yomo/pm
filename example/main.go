@@ -12,6 +12,7 @@ import (
 	"cloud.google.com/go/pubsub"
 	"github.com/k-yomo/pm"
 	"github.com/k-yomo/pm/middleware/logging/pm_zap"
+	"github.com/k-yomo/pm/middleware/pm_attributes"
 	"github.com/k-yomo/pm/middleware/pm_autoack"
 	"github.com/k-yomo/pm/middleware/pm_recovery"
 	"go.uber.org/zap"
@@ -28,15 +29,17 @@ func main() {
 
 	pubsubPublisher := pm.NewPublisher(
 		pubsubClient,
-		pm.WithPublishInterceptor(),
+		pm.WithPublishInterceptor(
+			pm_attributes.PublishInterceptor(map[string]string{"key": "value"}),
+		),
 	)
 
 	pubsubSubscriber := pm.NewSubscriber(
 		pubsubClient,
 		pm.WithSubscriptionInterceptor(
-			pm_recovery.SubscriptionInterceptor(pm_recovery.WithDebugRecoveryHandler()),
 			pm_zap.SubscriptionInterceptor(logger),
 			pm_autoack.SubscriptionInterceptor(),
+			pm_recovery.SubscriptionInterceptor(pm_recovery.WithDebugRecoveryHandler()),
 		),
 	)
 	defer pubsubSubscriber.Close()
@@ -57,6 +60,7 @@ func main() {
 	}
 
 	pubsubSubscriber.Run(ctx)
+	defer pubsubSubscriber.Close()
 
 	pubsubPublisher.Publish(
 		ctx,
