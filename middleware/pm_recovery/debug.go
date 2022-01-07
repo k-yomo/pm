@@ -9,6 +9,9 @@ import (
 	"strings"
 )
 
+// PrintPrettyStack prints readable stack trace
+// Ported from chi's implementation, source:
+// https://github.com/go-chi/chi/blob/7dbe9a0bd10f03c7841d0374af79d7fa32769a9f/middleware/recoverer.go#L52
 func PrintPrettyStack(p interface{}) {
 	debugStack := debug.Stack()
 	s := prettyStack{}
@@ -24,14 +27,14 @@ func PrintPrettyStack(p interface{}) {
 type prettyStack struct {
 }
 
-func (s prettyStack) parse(debugStack []byte, p interface{}) ([]byte, error) {
+func (s prettyStack) parse(debugStack []byte, rvr interface{}) ([]byte, error) {
 	var err error
 	useColor := true
 	buf := &bytes.Buffer{}
 
 	cW(buf, false, bRed, "\n")
 	cW(buf, useColor, bCyan, " panic: ")
-	cW(buf, useColor, bBlue, "%v", p)
+	cW(buf, useColor, bBlue, "%v", rvr)
 	cW(buf, false, bWhite, "\n \n")
 
 	// process debug stack info
@@ -41,7 +44,7 @@ func (s prettyStack) parse(debugStack []byte, p interface{}) ([]byte, error) {
 	// locate panic line, as we may have nested panics
 	for i := len(stack) - 1; i > 0; i-- {
 		lines = append(lines, stack[i])
-		if strings.HasPrefix(stack[i], "panic(0x") {
+		if strings.HasPrefix(stack[i], "panic(") {
 			lines = lines[0 : len(lines)-2] // remove boilerplate
 			break
 		}
@@ -93,17 +96,18 @@ func (s prettyStack) decorateFuncCallLine(line string, useColor bool, num int) (
 	// addr := line[idx:]
 	method := ""
 
-	idx = strings.LastIndex(pkg, string(os.PathSeparator))
-	if idx < 0 {
-		idx = strings.Index(pkg, ".")
-		method = pkg[idx:]
-		pkg = pkg[0:idx]
+	if idx := strings.LastIndex(pkg, string(os.PathSeparator)); idx < 0 {
+		if idx := strings.Index(pkg, "."); idx > 0 {
+			method = pkg[idx:]
+			pkg = pkg[0:idx]
+		}
 	} else {
 		method = pkg[idx+1:]
 		pkg = pkg[0 : idx+1]
-		idx = strings.Index(method, ".")
-		pkg += method[0:idx]
-		method = method[idx:]
+		if idx := strings.Index(method, "."); idx > 0 {
+			pkg += method[0:idx]
+			method = method[idx:]
+		}
 	}
 	pkgColor := nYellow
 	methodColor := bGreen
