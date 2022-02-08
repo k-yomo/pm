@@ -10,7 +10,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/rs/xid v1.3.0
 	github.com/sirupsen/logrus v1.8.1
-	go.uber.org/zap v1.20.0
+	go.uber.org/zap v1.21.0
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	google.golang.org/api v0.67.0
 	google.golang.org/genproto v0.0.0-20220126215142-9970aeb2e350
