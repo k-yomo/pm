@@ -5,7 +5,7 @@ go 1.17
 require (
 	cloud.google.com/go/datastore v1.6.0
 	cloud.google.com/go/pubsub v1.19.0
-	github.com/go-redis/redis/v8 v8.11.4
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/google/go-cmp v0.5.7
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/rs/xid v1.3.0
