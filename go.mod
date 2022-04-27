@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	cloud.google.com/go/datastore v1.6.0
-	cloud.google.com/go/pubsub v1.19.0
+	cloud.google.com/go/pubsub v1.21.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/google/go-cmp v0.5.7
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
@@ -20,7 +20,7 @@ require (
 require (
 	cloud.google.com/go v0.100.2 // indirect
 	cloud.google.com/go/compute v1.6.0 // indirect
-	cloud.google.com/go/iam v0.1.0 // indirect
+	cloud.google.com/go/iam v0.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
