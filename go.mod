@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	cloud.google.com/go/datastore v1.6.0
-	cloud.google.com/go/pubsub v1.21.1
+	cloud.google.com/go/pubsub v1.22.2
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/google/go-cmp v0.5.8
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
@@ -18,7 +18,7 @@ require (
 )
 
 require (
-	cloud.google.com/go v0.100.2 // indirect
+	cloud.google.com/go v0.102.0 // indirect
 	cloud.google.com/go/compute v1.6.1 // indirect
 	cloud.google.com/go/iam v0.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
