@@ -3,7 +3,7 @@ module github.com/k-yomo/pm
 go 1.17
 
 require (
-	cloud.google.com/go/datastore v1.6.0
+	cloud.google.com/go/datastore v1.8.0
 	cloud.google.com/go/pubsub v1.22.2
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/google/go-cmp v0.5.8
@@ -13,12 +13,12 @@ require (
 	go.uber.org/zap v1.21.0
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f
 	google.golang.org/api v0.84.0
-	google.golang.org/genproto v0.0.0-20220608133413-ed9918b62aac
+	google.golang.org/genproto v0.0.0-20220617124728-180714bec0ad
 	google.golang.org/protobuf v1.28.0
 )
 
 require (
-	cloud.google.com/go v0.102.0 // indirect
+	cloud.google.com/go v0.102.1 // indirect
 	cloud.google.com/go/compute v1.6.1 // indirect
 	cloud.google.com/go/iam v0.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
