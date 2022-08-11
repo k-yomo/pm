@@ -12,7 +12,7 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 	go.uber.org/zap v1.21.0
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f
-	google.golang.org/api v0.91.0
+	google.golang.org/api v0.92.0
 	google.golang.org/genproto v0.0.0-20220624142145-8cd45d7dbd1f
 	google.golang.org/protobuf v1.28.1
 )
