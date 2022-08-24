@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	cloud.google.com/go/datastore v1.8.0
-	cloud.google.com/go/pubsub v1.24.0
+	cloud.google.com/go/pubsub v1.25.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/google/go-cmp v0.5.8
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
@@ -13,7 +13,7 @@ require (
 	go.uber.org/zap v1.22.0
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f
 	google.golang.org/api v0.93.0
-	google.golang.org/genproto v0.0.0-20220624142145-8cd45d7dbd1f
+	google.golang.org/genproto v0.0.0-20220815135757-37a418bb8959
 	google.golang.org/protobuf v1.28.1
 )
 
@@ -36,5 +36,5 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/grpc v1.47.0 // indirect
+	google.golang.org/grpc v1.48.0 // indirect
 )
