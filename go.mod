@@ -6,7 +6,7 @@ require (
 	cloud.google.com/go/datastore v1.8.0
 	cloud.google.com/go/pubsub v1.24.0
 	github.com/go-redis/redis/v8 v8.11.5
-	github.com/google/go-cmp v0.5.8
+	github.com/google/go-cmp v0.5.9
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/rs/xid v1.4.0
 	github.com/sirupsen/logrus v1.9.0
