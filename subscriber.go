@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sync"
 
 	"cloud.google.com/go/pubsub"
 	"golang.org/x/sync/errgroup"
@@ -11,6 +12,7 @@ import (
 
 // Subscriber represents a wrapper of Pub/Sub client mainly focusing on pull subscription.
 type Subscriber struct {
+	mu                   sync.RWMutex
 	opts                 *subscriberOptions
 	pubsubClient         *pubsub.Client
 	subscriptionHandlers map[string]*subscriptionHandler
@@ -43,18 +45,24 @@ func NewSubscriber(pubsubClient *pubsub.Client, opt ...SubscriberOption) *Subscr
 // HandleSubscriptionFunc registers subscription handler for the given id's subscription.
 // If subscription does not exist, it will return error.
 func (s *Subscriber) HandleSubscriptionFunc(subscription *pubsub.Subscription, f MessageHandler) error {
+	s.mu.RLock()
 	if _, ok := s.subscriptionHandlers[subscription.ID()]; ok {
 		return fmt.Errorf("handler for subscription '%s' is already registered", subscription.ID())
 	}
+	s.mu.RUnlock()
+
 	cfg, err := subscription.Config(context.Background())
 	if err != nil {
 		return err
 	}
+
+	s.mu.Lock()
 	s.subscriptionHandlers[subscription.ID()] = &subscriptionHandler{
 		topicID:      cfg.Topic.ID(),
 		subscription: subscription,
 		handleFunc:   f,
 	}
+	s.mu.Unlock()
 
 	return nil
 }
