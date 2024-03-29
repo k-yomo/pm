@@ -2,14 +2,15 @@ package pm
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"sync"
 	"time"
 
 	"cloud.google.com/go/pubsub"
+	pb "cloud.google.com/go/pubsub/apiv1/pubsubpb"
 	"google.golang.org/api/support/bundler"
-	pb "google.golang.org/genproto/googleapis/pubsub/v1"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -144,13 +145,10 @@ func newBundleHandler(handler MessageBatchHandler) func(bundle interface{}) {
 		}
 
 		err := handler(messages)
-		if batchErr, ok := err.(BatchError); ok {
+		var batchErr BatchError
+		if errors.As(err, &batchErr) {
 			for _, bm := range bundledMessages {
 				bm.err <- batchErr[bm.msg.ID]
-			}
-		} else {
-			for _, bm := range bundledMessages {
-				bm.err <- err
 			}
 		}
 	}
