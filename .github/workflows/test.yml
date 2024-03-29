@@ -15,12 +15,11 @@ jobs:
         ports:
           - 8085:8085
       datastore:
-        image: singularities/datastore-emulator
+        image: motemen/datastore-emulator
         ports:
           - 8081:8081
         env:
-          DATASTORE_PROJECT_ID: test
-          DATASTORE_LISTEN_ADDRESS: 0.0.0.0:8081
+          CLOUDSDK_CORE_PROJECT: test
       redis:
         image: redis:5.0
         ports:
